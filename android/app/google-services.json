@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "642158587747",
+    "project_id": "team-project-398aa",
+    "storage_bucket": "team-project-398aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642158587747:android:90406053eea7662682ad56",
+        "android_client_info": {
+          "package_name": "com.example.triptrip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642158587747-q4uqmcckiodrimbct005at3ga07q5ck4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Q6hWMqsYAU3xCMvcLbSuROAXoA0YZsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642158587747-q4uqmcckiodrimbct005at3ga07q5ck4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "642158587747-3camh4sdvqu5c2hqcgogssk2h1l1tntn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.triptrip"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
