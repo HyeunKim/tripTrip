@@ -15,32 +15,36 @@ class AddPage extends StatelessWidget {
     // TODO: Pass Category variable to AsymmetricView (104)
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //   icon: const Icon(
-        //     Icons.person,
-        //     semanticLabel: 'person',
-        //   ),
-        //   onPressed: () {
-        //     print('person button');
-        //   },
-        // ),
-        title: const Text('add!!'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.exit_to_app,
-              semanticLabel: 'logout',
-            ),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              if (FirebaseAuth.instance.currentUser == null) {
-                Navigator.pushNamed(context, '/sign-in');
-              }
-              // Navigator.pushNamed(context, '/sign-in');
-              // print('logout button');
-            },
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            semanticLabel: 'menu',
           ),
-        ],
+          onPressed: () {
+            print('person button');
+          },
+        ),
+        title: const Text(
+            'tripTrip',
+            style: TextStyle(fontFamily: 'Quicksand'),
+            ),
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: const Icon(
+        //       Icons.exit_to_app,
+        //       semanticLabel: 'logout',
+        //     ),
+        //     onPressed: () async {
+        //       await FirebaseAuth.instance.signOut();
+        //       if (FirebaseAuth.instance.currentUser == null) {
+        //         Navigator.pushNamed(context, '/sign-in');
+        //       }
+        //       // Navigator.pushNamed(context, '/sign-in');
+        //       // print('logout button');
+        //     },
+        //   ),
+        // ],
       ),
       body: ListView(
         children: <Widget>[
