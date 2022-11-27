@@ -7,6 +7,7 @@ import 'login.dart';
 import 'profile.dart';
 import 'update.dart';
 import 'CloudStorageDemo.dart';
+import 'extentions.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -52,6 +53,19 @@ class App extends StatelessWidget {
         })
       },
       // title: 'Firebase Meetup',
+
+      title: 'tripTrip',
+      theme: ThemeData(
+        fontFamily: 'NanumGothicRegular',
+        brightness: Brightness.light,
+        backgroundColor: Colors.black,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        // primaryColor: const Color(0xFFffebee),
+        primaryColor: Colors.red,
+        // primarySwatch: '#ffebee'.toColor(),
+        // primarySwatch: Color(0xFFffebee),
+        scaffoldBackgroundColor: Colors.white,
+      ),
 
       // home: const HomePage(),
     );
