@@ -49,7 +49,7 @@ class App extends StatelessWidget {
         }),
         '/profile': ((context) {
           // return ProfilePage(providers: [], actions: [],);
-          return ProfilePage();
+          return const ProfilePage();
         })
       },
       // title: 'Firebase Meetup',
