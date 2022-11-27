@@ -19,6 +19,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.1,
+        backgroundColor: Colors.white70,
+        centerTitle: true,
+        title: const Text(
+          'tripTrip',
+          style: TextStyle(
+            fontFamily: 'Quicksand',
+            color: Color(0xFFf8bbd0),
+            fontSize: 30,
+          ),
+
+        ),
+
         centerTitle: true,
         title: const Text('tripTrip'),
         actions: <Widget>[
@@ -33,6 +46,82 @@ class HomePage extends StatelessWidget {
             },
           ),
         ],
+        iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
+      ),
+      drawer: Drawer(
+        backgroundColor: const Color(0xffFFCCCC),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              // ListView contains a group of widgets that scroll inside the drawer
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                      child: Text("tripTrip",
+                          style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                  ),
+                  const Padding(padding: EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: Text("MY",style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            ),
+            // This container holds the align
+            Container(
+              // This align moves the children to the bottom
+                child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    // This container holds all the children that will be aligned
+                    // on the bottom and should not scroll with the above ListView
+                    child: Container(
+                        child: Column(
+                          children: const <Widget>[
+                            ListTile(
+                                title: Text('정보수정',style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                          ],
+                        )
+                    )
+                )
+            )
+          ],
+        ),
       ),
       drawer: Drawer(
         backgroundColor: const Color(0xffFFCCCC),
@@ -230,6 +319,7 @@ class ApplicationState extends ChangeNotifier {
               GuestBookMessage(
                 id: document.id,
                 name: document.data()['name'] as String,
+                title: document.data()['title'] as String,
                 message: document.data()['text'] as String,
                 userId: document.data()['userId'] as String,
                 // timestamp:
@@ -264,7 +354,7 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<DocumentReference> addMessageToGuestBook(String message) {
+  Future<DocumentReference> addMessageToGuestBook(String title, String message) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
@@ -273,13 +363,14 @@ class ApplicationState extends ChangeNotifier {
         .collection('guestbook')
         .add(<String, dynamic>{
       'text': message,
+      'title': title,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'name': FirebaseAuth.instance.currentUser!.displayName ==null? 'anoy' : FirebaseAuth.instance.currentUser!.displayName,
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
-  Future<void> updateMessageToGuestBook(String newMessage_id, String newMessage_name, String newMessage_message, DateTime newMessage_time, String newMessage_userId) {
+  Future<void> updateMessageToGuestBook(String newMessage_id, String newMessage_name,  String newMessage_title, String newMessage_message, DateTime newMessage_time, String newMessage_userId) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
@@ -332,9 +423,10 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.message, required this.timestamp, required this.userId});
+  GuestBookMessage({required this.id, required this.name, required this.title, required this.message, required this.timestamp, required this.userId});
   final String id;
   final String name;
+  final String title;
   final String message;
   final DateTime timestamp;
   final String userId;
@@ -387,6 +479,7 @@ class _GuestBookState extends State<GuestBook> {
                           arguments: Argument(
                               message.id,
                               message.name,
+                              message.title,
                               message.message,
                               message.timestamp,
                               message.userId
@@ -427,96 +520,12 @@ class _GuestBookState extends State<GuestBook> {
 class Argument {
   String id;
   String name;
+  String title;
   String message;
   DateTime timestamp;
   String userId;
 
-  Argument(this.id, this.name, this.message, this.timestamp, this.userId);
-}
-
-class GuestBook2 extends StatefulWidget {
-  const GuestBook2({super.key, required this.addMessage});
-  final FutureOr<void> Function(String message) addMessage;
-
-  @override
-  _GuestBookState2 createState() => _GuestBookState2();
-}
-
-class _GuestBookState2 extends State<GuestBook2> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
-  final _controller = TextEditingController();
-
-  final user_id = FirebaseAuth.instance.currentUser?.uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child:
-            Column(
-              children: [
-                StyledButton(
-                  onPressed: () async {
-                    Navigator.pushNamed(context, '/camera');
-
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(Icons.send),
-                      SizedBox(width: 4),
-                      // Text('SEND'),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: 'Leave a message',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter your message to continue';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    StyledButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          await widget.addMessage(_controller.text);
-                          _controller.clear();
-                        }
-                      },
-                      child: Row(
-                        children: const [
-                          Icon(Icons.send),
-                          SizedBox(width: 4),
-                          Text('SEND'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-          ),
-        ),
-        const SizedBox(height: 8),
-
-      ],
-    );
-  }
+  Argument(this.id, this.name, this.title, this.message, this.timestamp, this.userId);
 }
 
 class GuestBook3 extends StatefulWidget {

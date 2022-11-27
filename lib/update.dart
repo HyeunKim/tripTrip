@@ -84,7 +84,7 @@ class UpdatePage extends StatelessWidget {
                   // ),
                   GuestBook3(
                     updateMessage: (message) =>
-                        appState.updateMessageToGuestBook(mess.id, mess.name, message, mess.timestamp, mess.userId),
+                        appState.updateMessageToGuestBook(mess.id, mess.name, mess.title, message, mess.timestamp, mess.userId),
                   ),
                 ],
               ],
