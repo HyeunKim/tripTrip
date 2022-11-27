@@ -19,6 +19,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(
             Icons.person,
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
             print('person button');
           },
         ),
-        title: const Text('Main'),
+        title: const Text('tripTrip'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
@@ -304,8 +305,8 @@ class _GuestBookState extends State<GuestBook> {
                   children: [
                     Paragraph('${message.name}: ${message.message}'), // ${message.id},
                     Padding(
-                      padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: Text('${DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)}'),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: Text(DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)),
                     ),
                   ],
                 ),
