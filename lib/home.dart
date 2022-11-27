@@ -20,16 +20,6 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.person,
-            semanticLabel: 'person',
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, '/profile');
-            print('person button');
-          },
-        ),
         title: const Text('tripTrip'),
         actions: <Widget>[
           IconButton(
@@ -43,6 +33,83 @@ class HomePage extends StatelessWidget {
             },
           ),
         ],
+      ),
+      drawer: Drawer(
+        backgroundColor: const Color(0xffFFCCCC),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              // ListView contains a group of widgets that scroll inside the drawer
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                      child: Text("tripTrip",
+                          style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                  ),
+                  const Padding(padding: EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: Text("MY",style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+
+                      )
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 40),
+                      child:ListTile(
+                        minLeadingWidth: 20,
+                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: RichText(text: const TextSpan(text: "trip",
+                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            ),
+            // This container holds the align
+            Container(
+              // This align moves the children to the bottom
+                child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    // This container holds all the children that will be aligned
+                    // on the bottom and should not scroll with the above ListView
+                    child: Container(
+                        child: Column(
+                          children: const <Widget>[
+                            ListTile(
+                                title: Text('정보수정',style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                            ],
+                        )
+                    )
+                )
+            )
+          ],
+        ),
+        /**/
+
       ),
       body: ListView(
         children: <Widget>[
@@ -333,7 +400,7 @@ class _GuestBookState extends State<GuestBook> {
                           // 'text': message,
                           // });
                         },
-                        icon: Icon(Icons.edit)
+                        icon: const Icon(Icons.edit)
                     ),
                     IconButton(
                         onPressed: (){
@@ -343,7 +410,7 @@ class _GuestBookState extends State<GuestBook> {
                               .doc(message.id)
                               .delete();
                         },
-                        icon: Icon(Icons.delete_outline)
+                        icon: const Icon(Icons.delete_outline)
 
                     ),
                   ],
