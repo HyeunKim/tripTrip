@@ -1,5 +1,5 @@
-name: triptrip
-description: 2022 project
+name: gtk_flutter
+description: Get to know Firebase with Flutter
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '>=2.18.2 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -36,11 +36,16 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  firebase_core: ^2.2.0
-  firebase_auth: ^4.1.2
-  cloud_firestore: ^4.0.5
+  google_fonts: ^3.0.1
+  firebase_core: ^2.1.1
+  firebase_auth: ^4.1.0
+  cloud_firestore: ^4.0.3
   provider: ^6.0.4
-  firebase_ui_auth: ^1.0.5
+  firebase_ui_auth: ^1.0.3
+  google_sign_in: ^5.4.2
+  firebase_storage: 11.0.3
+  image_picker: ^0.8.6
+  path: ^1.8.2
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +68,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/codelab.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
