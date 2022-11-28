@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
@@ -8,12 +7,13 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-// import 'src/authentication.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import 'src/widgets.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,27 +62,27 @@ class HomePage extends StatelessWidget {
                   const Padding(padding: EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: Text("MY",style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
+                        leading: Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
 
                       )
@@ -90,10 +90,10 @@ class HomePage extends StatelessWidget {
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 35,color: Colors.white,fontWeight: FontWeight.w300))])
+                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
+                            children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
                       )
                   ),
@@ -208,9 +208,6 @@ class ApplicationState extends ChangeNotifier {
   List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-
     FirebaseUIAuth.configureProviders([
       EmailAuthProvider(),
     ]);
@@ -582,3 +579,4 @@ class YesNoSelection extends StatelessWidget {
     }
   }
 }
+
