@@ -15,24 +15,24 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/home',
+      initialRoute: '/sign-in',
       routes: {
         '/home': (context) {
-          return HomePage();
+          return const HomePage();
         },
         '/sign-in': ((context) {
-          return LoginPage();
+          return const LoginPage();
         }),
         '/email_login': ((context) {
-          return EmailLoginPage();
+          return const EmailLoginPage();
         }),
         '/add': ((context) {
           // return ProfilePage(providers: [], actions: [],);
-          return AddPage();
+          return const AddPage();
         }),
         '/update': ((context) {
           // return ProfilePage(providers: [], actions: [],);
-          return UpdatePage();
+          return const UpdatePage();
         }),
         '/camera': ((context) {
           // return ProfilePage(providers: [], actions: [],);
