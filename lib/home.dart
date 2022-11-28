@@ -5,16 +5,21 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'login.dart';
 import 'src/widgets.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
+  Future _signOut()  async{
+    await FirebaseAuth.instance.signOut();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,11 +64,19 @@ class HomePage extends StatelessWidget {
                       child: Text("tripTrip",
                           style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
                   ),
-                  const Padding(padding: EdgeInsets.only(left: 40),
+                  Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
+                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        title: const Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
+                        onTap:(){
+                          if(FirebaseAuth.instance.currentUser==null){
+                            Navigator.pushNamed(context, '/sign-in');
+                          }else{
+                            _signOut();
+                            Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
+                          }
+                        },
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
@@ -74,6 +87,9 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
+                        onTap: (){
+                          Navigator.pushNamed(context, '/');
+                          },
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
@@ -84,7 +100,9 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
-
+                        onTap: (){
+                          Navigator.pushNamed(context, '/');
+                        },
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
@@ -95,6 +113,9 @@ class HomePage extends StatelessWidget {
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
+                        onTap: (){
+                          Navigator.pushNamed(context, '/');
+                        },
                       )
                   ),
                 ],
