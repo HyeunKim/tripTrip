@@ -277,7 +277,7 @@ class HomePage extends StatelessWidget {
           return SizedBox(
             width: 50,
             child: AlertDialog(
-
+                backgroundColor: Color(0xFFffebee),
               // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0)),
@@ -298,8 +298,8 @@ class HomePage extends StatelessWidget {
                         // Navigator.pushNamed(context, '/앨범사진추가하는 페이지');
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor:  Colors.black54,
-                        textStyle: const TextStyle(fontSize: 20,),
+                        foregroundColor:  Color(0xFFe57373),
+                        textStyle: const TextStyle(fontSize: 20),
                       ),
                       child: const Text("앨범 사진 추가하기"),
                     ),
@@ -310,7 +310,7 @@ class HomePage extends StatelessWidget {
                     thickness: 2,
                     indent: 8,
                     endIndent: 8,
-                    color: Color(0xFFffcdd2),
+                    color: Colors.white,
                   ),
                   Center(
                     child: TextButton(
@@ -318,7 +318,7 @@ class HomePage extends StatelessWidget {
                         Navigator.pushNamed(context, '/new-add');
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor:  Colors.black54,
+                        foregroundColor:  Color(0xFFe57373),
                         textStyle: const TextStyle(fontSize: 20,),
                       ),
                       child: const Text("로그 추가하기"),
