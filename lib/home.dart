@@ -130,12 +130,6 @@ class HomePage extends StatelessWidget {
                                         Alignment.topRight,
                                       ),
                                       onPressed: () {
-                                        print("documnet id가");
-                                        print(documentSnapshot.id);
-                                        print("detail 페이지로 이동");
-                                        print(documentSnapshot['text']);
-                                        // print(DateFormat('yy/MM/dd - HH:mm:ss.SS').parse(documentSnapshot['timestamp'].toString()));
-
                                         Navigator.pushNamed(
                                           context,
                                           '/detail',
@@ -292,7 +286,6 @@ class ApplicationState extends ChangeNotifier {
     });
 
     FirebaseAuth.instance.userChanges().listen((user) {
-      // print(user);
       if (user != null) {
         _loggedIn = true;
         _guestBookSubscription = FirebaseFirestore.instance

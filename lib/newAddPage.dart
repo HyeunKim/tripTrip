@@ -108,18 +108,13 @@ class _newAddScreenState extends State<newAddScreen>{
     setState(() => title = later_title);
     setState(() => message = later_message);
 
-    print(_image);
-
     if (_image == null){
       addMessageToGuestBookDefaultImage(title!, message!);
     }
     else{
       addMessageToGuestBookWithImage(title!, message!, _image!);
     }
-
   }
-
-
 
   @override
   Widget build(BuildContext context){
@@ -153,18 +148,13 @@ class _newAddScreenState extends State<newAddScreen>{
                 ),
                 // onPressed: () {
                 onPressed: () async {
-                  print("temp..");
-
                   if (_formKey.currentState!.validate()) {
                     await makeLog(_controller_title.text, _controller.text);
                     _controller.clear();
                     _controller_title.clear();
                     flutterDialog(context);
                   }
-
-
-                  // Navigator.pop(context);
-                },
+                  },
                 child: const Text(
                     "Save",
                     style: TextStyle(color: Colors.white)
