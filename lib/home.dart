@@ -48,8 +48,8 @@ class HomePage extends StatelessWidget {
               semanticLabel: 'add',
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/add');
-              print('add button');
+              Navigator.pushNamed(context, '/new-add');
+              // print('add button');
             },
           ),
         ],
@@ -67,19 +67,24 @@ class HomePage extends StatelessWidget {
                   const DrawerHeader(
                       padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
                       child: Text("tripTrip",
-                          style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                          style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: const Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
                         onTap:(){
                           if(FirebaseAuth.instance.currentUser==null){
                             Navigator.pushNamed(context, '/sign-in');
                           }else{
-                            _signOut();
-                            Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
+                            FirebaseAuth.instance.signOut();
+                            if(FirebaseAuth.instance.currentUser==null){
+                              Navigator.pushNamed(context, '/sign-in');
+                            }
+                            // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
+                            // _signOut();
+                            // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
                           }
                         },
                       )
@@ -87,20 +92,20 @@ class HomePage extends StatelessWidget {
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
                         onTap: (){
-                          Navigator.pushNamed(context, '/');
-                          },
+                          Navigator.pushNamed(context, '/sign-in');
+                        },
                       )
                   ),
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
@@ -113,7 +118,7 @@ class HomePage extends StatelessWidget {
                   Padding(padding: const EdgeInsets.only(left: 40),
                       child:ListTile(
                         minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+                        leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                         title: RichText(text: const TextSpan(text: "trip",
                             style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
                             children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
@@ -172,7 +177,7 @@ class HomePage extends StatelessWidget {
                           File(documentSnapshot['img']),
                           fit: BoxFit.fitWidth,
                         ),
-                      ),*/
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(
@@ -203,13 +208,14 @@ class HomePage extends StatelessWidget {
                                         Navigator.pushNamed(
                                           context,
                                           '/detail',
-                                          arguments: Argument(
-                                              documentSnapshot.id,
-                                              documentSnapshot['uid'],
-                                              documentSnapshot['img'],
-                                              documentSnapshot['name'],
-                                              documentSnapshot['price'],
-                                              documentSnapshot['description']),
+                                          // arguments: Argument(
+                                          //     message.id,
+                                          //     message.name,
+                                          //     message.title,
+                                          //     message.img_url,
+                                          //     message.message,
+                                          //     message.timestamp,
+                                          //     message.userId,
                                         );
                                       },
                                       child: const Align(
@@ -308,6 +314,7 @@ class ApplicationState extends ChangeNotifier {
                 id: document.id,
                 name: document.data()['name'] as String,
                 title: document.data()['title'] as String,
+                img_url: document.data()['img_url'] as String,
                 message: document.data()['text'] as String,
                 userId: document.data()['userId'] as String,
                 // timestamp:
@@ -352,13 +359,33 @@ class ApplicationState extends ChangeNotifier {
         .add(<String, dynamic>{
       'text': message,
       'title': title,
+      'likes':0,
+      'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ==null? 'anoy' : FirebaseAuth.instance.currentUser!.displayName,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
-  Future<void> updateMessageToGuestBook(String newMessage_id, String newMessage_name,  String newMessage_title, String newMessage_message, DateTime newMessage_time, String newMessage_userId) {
+  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in ');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('guestbook')
+        .add(<String, dynamic>{
+      'text': message,
+      'title': title,
+      'likes':0,
+      'img_url':imgURL,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
+  Future<void> updateMessageToGuestBook(String newMessageId, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
@@ -367,9 +394,9 @@ class ApplicationState extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('guestbook')
-        .doc(newMessage_id)
+        .doc(newMessageId)
         .update(<String, dynamic>{
-      'text': newMessage_message,
+      'text': newMessageMessage,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       // 'name': newMessage_name,
       // 'userId': newMessage_userId,
@@ -411,10 +438,11 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.title, required this.message, required this.timestamp, required this.userId});
+  GuestBookMessage({required this.id, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
   final String id;
   final String name;
   final String title;
+  final String img_url;
   final String message;
   final DateTime timestamp;
   final String userId;
@@ -468,6 +496,7 @@ class _GuestBookState extends State<GuestBook> {
                               message.id,
                               message.name,
                               message.title,
+                              message.img_url,
                               message.message,
                               message.timestamp,
                               message.userId
@@ -509,11 +538,12 @@ class Argument {
   String id;
   String name;
   String title;
+  String img_url;
   String message;
   DateTime timestamp;
   String userId;
 
-  Argument(this.id, this.name, this.title, this.message, this.timestamp, this.userId);
+  Argument(this.id, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
 }
 
 class GuestBook3 extends StatefulWidget {

@@ -8,6 +8,8 @@ import 'profile.dart';
 import 'update.dart';
 import 'CloudStorageDemo.dart';
 import 'extentions.dart';
+import 'tempAdd.dart';
+import 'newAddPage.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -38,6 +40,17 @@ class App extends StatelessWidget {
           // return ProfilePage(providers: [], actions: [],);
           return CloudStorageDemo();
         }),
+
+        '/temp-add': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return AddScreen();
+        }),
+
+        '/new-add': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return newAddScreen();
+        }),
+
         '/forgot-password': ((context) {
           final arguments = ModalRoute.of(context)?.settings.arguments
           as Map<String, dynamic>?;
