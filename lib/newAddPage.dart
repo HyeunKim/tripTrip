@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:path/path.dart';
+import 'drawer.dart';
 
 class newAddScreen extends StatefulWidget{
   const newAddScreen({Key? key}) : super(key:key);
@@ -21,8 +22,6 @@ class _newAddScreenState extends State<newAddScreen>{
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
-  Product product = Product("", "",  "", 0, "");
-
   String? title;
   String? message;
   String? _image;
@@ -30,47 +29,6 @@ class _newAddScreenState extends State<newAddScreen>{
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
   final _controller_title = TextEditingController();
   final _controller = TextEditingController();
-
-  // Future<void> createProduct (Product product, String? _image)async{
-  //   CollectionReference newDoc = FirebaseFirestore.instance
-  //       .collection('products');
-  //   final currentUser = FirebaseAuth.instance;
-  //   final json = {
-  //     'uid' : currentUser.currentUser!.uid,
-  //     'img' : _image!,
-  //     'price' : product.price,
-  //     'name' : product.name,
-  //     'description' : product.desc,
-  //     'CreatedTime' : Timestamp.now()
-  //   };
-  //   await newDoc.doc().set(json);
-  // }
-  //
-  // Future<void> createDefaultProduct (Product product)async{
-  //   CollectionReference newDoc = FirebaseFirestore.instance
-  //       .collection('products');
-  //   final currentUser = FirebaseAuth.instance;
-  //   final json = {
-  //     'uid' : currentUser.currentUser!.uid,
-  //     'img' : '/data/user/0/com.example.finalterm/cache/image_picker2313401157609972380.png',
-  //     'price' : product.price,
-  //     'name' : product.name,
-  //     'description' : product.desc,
-  //     'CreatedTime' : FieldValue.serverTimestamp()
-  //   };
-  //   await newDoc.doc().set(json);
-  // }
-  //
-  // Future getImage() async {
-  //   try {
-  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //     if (image == null) return;
-  //     final imageTemporary = image.path;
-  //     setState(() => _image = imageTemporary);
-  //   }on PlatformException catch(e){
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
 
   Future<DocumentReference> addMessageToGuestBookDefaultImage(String title, String message) {
     return FirebaseFirestore.instance
@@ -213,136 +171,8 @@ class _newAddScreenState extends State<newAddScreen>{
           ],
         ),
 
-        // floatingActionButton: Container(
-        //   // alignment: Alignment.center,
-        //   padding: const EdgeInsets.fromLTRB(100, 0, 150, 0),
-        //   child: FloatingActionButton(
-        //     elevation: 0,
-        //     backgroundColor: const Color(0xFFef9a9a),
-        //     onPressed: () {
-        //       flutterDialog(context);
-        //       // 버튼을 누르면 실행될 코드 작성
-        //     },
-        //     child: const Icon(Icons.add_a_photo),
-        //   ),
-        // ),
+        drawer: DrawerCustom(),
 
-        drawer: Drawer(
-          backgroundColor: const Color(0xffFFCCCC),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                // ListView contains a group of widgets that scroll inside the drawer
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    Padding(padding: const EdgeInsets.fromLTRB(35, 60, 0, 50),
-                      child:Align(
-                        alignment: Alignment.topLeft,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/home');
-                          },
-                          style: TextButton.styleFrom(
-                              foregroundColor:  Colors.white,
-                              textStyle: const TextStyle(fontFamily: 'Quicksand', fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-
-
-                          child: const Text("tripTrip"),
-                        ),
-                      ),
-                    ),
-
-                    // const DrawerHeader(
-                    //     padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
-                    //     child: Text("tripTrip",
-                    //         style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
-                    // ),
-                    Padding(padding: const EdgeInsets.only(left: 40),
-                        child:ListTile(
-                          minLeadingWidth: 20,
-                          leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                          title: const Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
-                          onTap:(){
-                            if(FirebaseAuth.instance.currentUser==null){
-                              Navigator.pushNamed(context, '/sign-in');
-                            }else{
-                              FirebaseAuth.instance.signOut();
-                              if(FirebaseAuth.instance.currentUser==null){
-                                Navigator.pushNamed(context, '/sign-in');
-                              }
-                              // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
-                              // _signOut();
-                              // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
-                            }
-                          },
-                        )
-                    ),
-                    Padding(padding: const EdgeInsets.only(left: 40),
-                        child:ListTile(
-                          minLeadingWidth: 20,
-                          leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                          title: RichText(text: const TextSpan(text: "trip",
-                              style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                              children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                          ),
-                          onTap: (){
-                            Navigator.pushNamed(context, '/sign-in');
-                          },
-                        )
-                    ),
-                    Padding(padding: const EdgeInsets.only(left: 40),
-                        child:ListTile(
-                          minLeadingWidth: 20,
-                          leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                          title: RichText(text: const TextSpan(text: "trip",
-                              style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                              children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                          ),
-                          onTap: (){
-                            Navigator.pushNamed(context, '/home');
-                          },
-                        )
-                    ),
-                    Padding(padding: const EdgeInsets.only(left: 40),
-                        child:ListTile(
-                          minLeadingWidth: 20,
-                          leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                          title: RichText(text: const TextSpan(text: "trip",
-                              style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                              children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                          ),
-                          onTap: (){
-                            Navigator.pushNamed(context, '/');
-                          },
-                        )
-                    ),
-                  ],
-                ),
-              ),
-              // This container holds the align
-              Container(
-                // This align moves the children to the bottom
-                  child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      // This container holds all the children that will be aligned
-                      // on the bottom and should not scroll with the above ListView
-                      child: Container(
-                          child: Column(
-                            children: const <Widget>[
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(15, 0, 0, 15),
-                                child: ListTile(
-                                    title: Text('정보수정',style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
-                              )
-                            ],
-                          )
-                      )
-                  )
-              )
-            ],
-          ),
-        ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child:Column(
@@ -387,8 +217,6 @@ class _newAddScreenState extends State<newAddScreen>{
                   ),
                 ),
                 Container(
-                  // height: 500,
-                  // margin: const EdgeInsets.all(10),
                   margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -435,16 +263,6 @@ class _newAddScreenState extends State<newAddScreen>{
                           // height: 500,
                           // margin: const EdgeInsets.all(10),
                           margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-                          // padding: const EdgeInsets.all(8),
-                          // decoration: BoxDecoration(
-                          //   border: Border.all(
-                          //     width: 1.5,
-                          //     color: const Color(0xFFffcdd2),
-                          //   ),
-                          //   borderRadius: const BorderRadius.all(
-                          //       Radius.circular(10.0) // POINT
-                          //   ),
-                          // ),
 
                           child:
                             SizedBox(
@@ -600,28 +418,8 @@ class _newAddScreenState extends State<newAddScreen>{
                 const SizedBox(height: 30),
 
               ]
-          ),)
+          ),
+        ),
     );
   }
-}
-
-class Product {
-  Product(this.userId,  this.img, this.name, this.price, this.desc);
-  String userId;
-  String img;
-  String name;
-  int price;
-  String desc;
-
-  String getUserId(){return userId;}
-  String getImg(){return img;}
-  String getProductName() {return name;}
-  int getPrice(){return price;}
-  String getDesc(){return desc;}
-
-  void setUserId(String val){userId=val;}
-  void setImg(String val){img=val;}
-  void setProductName(String val) {name=val;}
-  void setPrice(int val){price=val;}
-  void setDesc(String val){desc=val;}
 }
