@@ -236,11 +236,28 @@ class _newAddScreenState extends State<newAddScreen>{
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    const DrawerHeader(
-                        padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
-                        child: Text("tripTrip",
-                            style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                    Padding(padding: const EdgeInsets.fromLTRB(35, 60, 0, 50),
+                      child:Align(
+                        alignment: Alignment.topLeft,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/home');
+                          },
+                          style: TextButton.styleFrom(
+                              foregroundColor:  Colors.white,
+                              textStyle: const TextStyle(fontFamily: 'Quicksand', fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+
+
+                          child: const Text("tripTrip"),
+                        ),
+                      ),
                     ),
+
+                    // const DrawerHeader(
+                    //     padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                    //     child: Text("tripTrip",
+                    //         style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                    // ),
                     Padding(padding: const EdgeInsets.only(left: 40),
                         child:ListTile(
                           minLeadingWidth: 20,
@@ -254,6 +271,8 @@ class _newAddScreenState extends State<newAddScreen>{
                               if(FirebaseAuth.instance.currentUser==null){
                                 Navigator.pushNamed(context, '/sign-in');
                               }
+                              // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
+                              // _signOut();
                               // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
                             }
                           },
@@ -281,7 +300,7 @@ class _newAddScreenState extends State<newAddScreen>{
                               children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                           ),
                           onTap: (){
-                            Navigator.pushNamed(context, '/');
+                            Navigator.pushNamed(context, '/home');
                           },
                         )
                     ),
@@ -311,8 +330,11 @@ class _newAddScreenState extends State<newAddScreen>{
                       child: Container(
                           child: Column(
                             children: const <Widget>[
-                              ListTile(
-                                  title: Text('정보수정',style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 0, 15),
+                                child: ListTile(
+                                    title: Text('정보수정',style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                              )
                             ],
                           )
                       )

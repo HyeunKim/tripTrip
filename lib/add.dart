@@ -314,7 +314,7 @@ class _AddPageState extends State<AddPage>{
                             children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                         ),
                         onTap: (){
-                          Navigator.pushNamed(context, '/');
+                          Navigator.pushNamed(context, '/home');
                         },
                       )
                   ),
