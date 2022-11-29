@@ -7,7 +7,7 @@ import 'login.dart';
 import 'profile.dart';
 import 'update.dart';
 import 'CloudStorageDemo.dart';
-import 'extentions.dart';
+import 'detail.dart';
 import 'tempAdd.dart';
 import 'newAddPage.dart';
 
@@ -35,6 +35,10 @@ class App extends StatelessWidget {
         '/update': ((context) {
           // return ProfilePage(providers: [], actions: [],);
           return const UpdatePage();
+        }),
+        '/detail': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return DetailPage();
         }),
         '/camera': ((context) {
           // return ProfilePage(providers: [], actions: [],);

@@ -151,6 +151,19 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+        floatingActionButton: Container(
+          // alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(100, 0, 150, 0),
+          child: FloatingActionButton(
+            elevation: 0,
+            backgroundColor: const Color(0xFFef9a9a),
+            onPressed: () {
+              flutterDialog(context);
+              // 버튼을 누르면 실행될 코드 작성
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
       body:StreamBuilder(
         stream: _guestbook.orderBy('timestamp').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -173,8 +186,12 @@ class HomePage extends StatelessWidget {
                     children: <Widget>[
                       AspectRatio(
                         aspectRatio: 10 / 5,
-                        child: Image.file(
-                          File(documentSnapshot['img']),
+                        child:
+                        documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                            ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                            :
+                        Image.file(
+                          File(documentSnapshot['img_url']),
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -247,6 +264,82 @@ class HomePage extends StatelessWidget {
         },
       )
     );
+  }
+
+  void flutterDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        // barrierDismissible: false,
+        builder: (BuildContext context) {
+
+
+          return SizedBox(
+            width: 50,
+            child: AlertDialog(
+
+              // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              //Dialog Main Title
+              // title: Column(
+              //   children: <Widget>[
+              //     new Text("Dialog Title"),
+              //   ],
+              // ),
+              //
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        // Navigator.pushNamed(context, '/앨범사진추가하는 페이지');
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor:  Colors.black54,
+                        textStyle: const TextStyle(fontSize: 20,),
+                      ),
+                      child: const Text("앨범 사진 추가하기"),
+                    ),
+                  ),
+
+                  const Divider(
+                    height: 8,
+                    thickness: 2,
+                    indent: 8,
+                    endIndent: 8,
+                    color: Color(0xFFffcdd2),
+                  ),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/new-add');
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor:  Colors.black54,
+                        textStyle: const TextStyle(fontSize: 20,),
+                      ),
+                      child: const Text("로그 추가하기"),
+                    ),
+                  ),
+                  // Text(
+                  //   "Dialog Content",
+                  // ),
+                ],
+              ),
+              // actions: <Widget>[
+              //   TextButton(
+              //     child: new Text("확인"),
+              //     onPressed: () {
+              //       Navigator.pop(context);
+              //     },
+              //   ),
+              // ],
+            ),
+          );
+        });
   }
 }
 
@@ -532,6 +625,86 @@ class _GuestBookState extends State<GuestBook> {
       ],
     );
   }
+
+  // void flutterDialog(BuildContext context) {
+  //   showDialog(
+  //       context: context,
+  //       //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+  //       // barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //
+  //
+  //         return SizedBox(
+  //           width: 50,
+  //           child: AlertDialog(
+  //
+  //             // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(15.0)),
+  //             //Dialog Main Title
+  //             // title: Column(
+  //             //   children: <Widget>[
+  //             //     new Text("Dialog Title"),
+  //             //   ],
+  //             // ),
+  //             //
+  //             content: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Center(
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       // imgFromCamera();
+  //
+  //                       Navigator.pushNamed(context, '/temp-add');
+  //                       // Navigator.pop(context);
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       foregroundColor:  Colors.black54,
+  //                       textStyle: const TextStyle(fontSize: 20,),
+  //                     ),
+  //                     child: const Text("카메라"),
+  //                   ),
+  //                 ),
+  //
+  //                 const Divider(
+  //                   height: 8,
+  //                   thickness: 2,
+  //                   indent: 8,
+  //                   endIndent: 8,
+  //                   color: Color(0xFFffcdd2),
+  //                 ),
+  //                 Center(
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       foregroundColor:  Colors.black54,
+  //                       textStyle: const TextStyle(fontSize: 20,),
+  //                     ),
+  //                     child: const Text("갤러리"),
+  //                   ),
+  //                 ),
+  //                 // Text(
+  //                 //   "Dialog Content",
+  //                 // ),
+  //               ],
+  //             ),
+  //             // actions: <Widget>[
+  //             //   TextButton(
+  //             //     child: new Text("확인"),
+  //             //     onPressed: () {
+  //             //       Navigator.pop(context);
+  //             //     },
+  //             //   ),
+  //             // ],
+  //           ),
+  //         );
+  //       });
+  // }
+
 }
 
 class Argument {
