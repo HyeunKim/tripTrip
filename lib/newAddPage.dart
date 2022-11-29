@@ -159,7 +159,11 @@ class _newAddScreenState extends State<newAddScreen>{
                     await makeLog(_controller_title.text, _controller.text);
                     _controller.clear();
                     _controller_title.clear();
+                    flutterDialog(context);
                   }
+
+
+                  // Navigator.pop(context);
                 },
                 child: const Text(
                     "Save",
@@ -420,6 +424,52 @@ class _newAddScreenState extends State<newAddScreen>{
               ]
           ),
         ),
+    );
+  }
+
+  void flutterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+      // barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SizedBox(
+          width: 50,
+          child: AlertDialog(
+            // backgroundColor: Color(0xFFffebee),
+            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const <Widget>[
+                SizedBox(height: 45),
+                Center(
+                  child:
+                  Text(
+                    "저장되었습니다.",
+                    style: TextStyle(color: Color(0xFFe57373), fontSize: 20), // Color(0xFFe57373)
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  "확인",
+                  style: TextStyle(color: Colors.black87, fontSize: 20), // Color(0xFFe57373)
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/home');
+                  // Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

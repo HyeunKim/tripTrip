@@ -133,7 +133,7 @@ class HomePage extends StatelessWidget {
                                         print("documnet id가");
                                         print(documentSnapshot.id);
                                         print("detail 페이지로 이동");
-                                        print(documentSnapshot['timestamp'].runtimeType);
+                                        print(documentSnapshot['text']);
                                         // print(DateFormat('yy/MM/dd - HH:mm:ss.SS').parse(documentSnapshot['timestamp'].toString()));
 
                                         Navigator.pushNamed(
@@ -145,7 +145,7 @@ class HomePage extends StatelessWidget {
                                             documentSnapshot['name'],
                                             documentSnapshot['title'],
                                             documentSnapshot['img_url'],
-                                            documentSnapshot['title'], // message
+                                            documentSnapshot['text'],
                                             // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
                                               DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
                                               documentSnapshot['userId']
@@ -238,7 +238,8 @@ class HomePage extends StatelessWidget {
               ),
             ),
           );
-        });
+        },
+        );
   }
 }
 
