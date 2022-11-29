@@ -225,14 +225,15 @@ class HomePage extends StatelessWidget {
                                         Navigator.pushNamed(
                                           context,
                                           '/detail',
-                                          // arguments: Argument(
-                                          //     message.id,
-                                          //     message.name,
-                                          //     message.title,
-                                          //     message.img_url,
-                                          //     message.message,
-                                          //     message.timestamp,
-                                          //     message.userId,
+                                          arguments: Argument(
+                                          documentSnapshot['id'],
+                                            documentSnapshot['name'],
+                                            documentSnapshot['title'],
+                                            documentSnapshot['img_url'],
+                                            documentSnapshot['message'],
+                                            documentSnapshot['timestamp'],
+                                            documentSnapshot['userId']
+                                          )
                                         );
                                       },
                                       child: const Align(
