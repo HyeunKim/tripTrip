@@ -1,19 +1,29 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-// import 'src/authentication.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import 'login.dart';
 import 'src/widgets.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  Future _signOut()  async{
+    await FirebaseAuth.instance.signOut();
+  }
+
+  final currentUser = FirebaseAuth.instance;
+  final CollectionReference _guestbook =
+  FirebaseFirestore.instance.collection('guestbook');
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +82,8 @@ class HomePage extends StatelessWidget {
                             if(FirebaseAuth.instance.currentUser==null){
                               Navigator.pushNamed(context, '/sign-in');
                             }
+                            // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
+                            // _signOut();
                             // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
                           }
                         },
@@ -139,55 +151,100 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView(
-        children: <Widget>[
-          // Image.asset('assets/codelab.png'),
-          const SizedBox(height: 8),
-          // const IconAndDetail(Icons.calendar_today, 'October 30'),
-          // const IconAndDetail(Icons.location_city, 'San Francisco'),
-          // Consumer<ApplicationState>(
-          //   builder: (context, appState, _) => AuthFunc(
-          //       loggedIn: appState.loggedIn,
-          //       signOut: () {
-          //         FirebaseAuth.instance.signOut();
-          //       }),
-          // ),
-          // const Divider(
-          //   height: 8,
-          //   thickness: 1,
-          //   indent: 8,
-          //   endIndent: 8,
-          //   color: Colors.grey,
-          // ),
-          // const Header("What we'll be doing"),
-          // const Paragraph(
-          //   'Join us for a day full of Firebase Workshops and Pizza!',
-          // ),
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // if (appState.attendees >= 2)
-                //   Paragraph('${appState.attendees} people going')
-                // else if (appState.attendees == 1)
-                //   const Paragraph('1 person going')
-                // else
-                //   const Paragraph('No one going'),
-                if (appState.loggedIn) ...[
-                  // YesNoSelection(
-                  //   state: appState.attending,
-                  //   onSelection: (attending) => appState.attending = attending,
-                  // ),
-                  const Header('Discussion'),
-                  GuestBook(
-                    messages: appState.guestBookMessages,
+      body:StreamBuilder(
+        stream: _guestbook.orderBy('timestamp').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            return GridView.builder(
+              itemCount: snapshot.data!.docs.length,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 8 / 9,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16),
+              itemBuilder: (BuildContext context, int index) {
+                final DocumentSnapshot documentSnapshot =
+                snapshot.data!.docs[index];
+                return Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      AspectRatio(
+                        aspectRatio: 10 / 5,
+                        child: Image.file(
+                          File(documentSnapshot['img']),
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),*/
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              16.0, 12.0, 16.0, 0.0),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(documentSnapshot['name']),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 25,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      style: const ButtonStyle(
+                                        alignment:
+                                        Alignment.topRight,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/detail',
+                                          arguments: Argument(
+                                              documentSnapshot.id,
+                                              documentSnapshot['uid'],
+                                              documentSnapshot['img'],
+                                              documentSnapshot['name'],
+                                              documentSnapshot['price'],
+                                              documentSnapshot['description']),
+                                        );
+                                      },
+                                      child: const Align(
+                                          alignment:
+                                          Alignment.topRight,
+                                          child: Text(
+                                            'more',
+                                            style: TextStyle(
+                                              fontSize: 10.0,
+                                            ),
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
+                );
+              },
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      )
     );
   }
 }
@@ -227,9 +284,6 @@ class ApplicationState extends ChangeNotifier {
   List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-
     FirebaseUIAuth.configureProviders([
       EmailAuthProvider(),
     ]);
@@ -426,7 +480,7 @@ class _GuestBookState extends State<GuestBook> {
                     Paragraph('${message.name}: ${message.message}'), // ${message.id},
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: Text(DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)),
+                      child: Text('')//DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)),
                     ),
                   ],
                 ),
@@ -625,3 +679,4 @@ class YesNoSelection extends StatelessWidget {
     }
   }
 }
+

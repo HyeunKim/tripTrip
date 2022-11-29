@@ -12,7 +12,80 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 
-class LoginPage extends StatelessWidget {
+import 'home.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot){
+        if(!snapshot.hasData){
+          return Scaffold(
+            body: SafeArea(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  children: <Widget>[
+                    const SizedBox(height: 80.0),
+                    Column(
+                      children: <Widget>[
+                        //Image.asset('assets/diamond.png'),
+                        const SizedBox(height: 16.0),
+                        const Text('SHRINE'),
+                      ],
+                    ),
+                    const SizedBox(height: 120.0),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                            child: const Text("Google"), onPressed: signInWithGoogle
+                        ),
+                        ElevatedButton(
+                            child: const Text("Guest"), onPressed:
+                        FirebaseAuth.instance.signInAnonymously
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+            ),
+          );
+        }
+        else{
+          return HomePage();
+        }
+      },);
+  }
+}
+
+/*class LoginPage extends StatelessWidget {
   // const LoginPage({super.key, required List<FirebaseUIAction> actions});
   const LoginPage();
 
@@ -104,4 +177,4 @@ Future<UserCredential> signInWithGoogle() async {
 Future<void> init() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
-}
+}*/
