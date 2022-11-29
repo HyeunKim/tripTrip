@@ -177,7 +177,7 @@ class HomePage extends StatelessWidget {
                           File(documentSnapshot['img']),
                           fit: BoxFit.fitWidth,
                         ),
-                      ),*/
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(
@@ -208,13 +208,14 @@ class HomePage extends StatelessWidget {
                                         Navigator.pushNamed(
                                           context,
                                           '/detail',
-                                          arguments: Argument(
-                                              documentSnapshot.id,
-                                              documentSnapshot['uid'],
-                                              documentSnapshot['img'],
-                                              documentSnapshot['name'],
-                                              documentSnapshot['price'],
-                                              documentSnapshot['description']),
+                                          // arguments: Argument(
+                                          //     message.id,
+                                          //     message.name,
+                                          //     message.title,
+                                          //     message.img_url,
+                                          //     message.message,
+                                          //     message.timestamp,
+                                          //     message.userId,
                                         );
                                       },
                                       child: const Align(
