@@ -1,32 +1,131 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
-import 'firebase_options.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:path/path.dart';
+import 'home.dart';
 
-import 'login.dart';
-import 'src/widgets.dart';
-
-class DetailPage extends StatelessWidget {
-  DetailPage({super.key});
-
-  Future _signOut()  async{
-    await FirebaseAuth.instance.signOut();
-  }
-
-  final currentUser = FirebaseAuth.instance;
-  final CollectionReference _guestbook =
-  FirebaseFirestore.instance.collection('guestbook');
+class DetailPage extends StatefulWidget{
+  const DetailPage({Key? key}) : super(key:key);
 
   @override
-  Widget build(BuildContext context) {
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage>{
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+
+  String? title;
+  String? message;
+  String? _image;
+
+  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+  final _controller_title = TextEditingController();
+  final _controller = TextEditingController();
+
+  Future<DocumentReference> addMessageToGuestBookDefaultImage(String title, String message) {
+    return FirebaseFirestore.instance
+        .collection('guestbook')
+        .add(<String, dynamic>{
+      'text': message,
+      'title': title,
+      'likes':0,
+      'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
+  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+    return FirebaseFirestore.instance
+        .collection('guestbook')
+        .add(<String, dynamic>{
+      'text': message,
+      'title': title,
+      'likes':0,
+      'img_url':imgURL,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = basename(_photo!.path);
+    final destination = 'files/$fileName';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('file/');
+      await ref.putFile(_photo!);
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        setState(() => _image = pickedFile.path);
+        setState(() => _photo = File(_image!));
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        setState(() => _image = pickedFile.path);
+        _photo = File(_image!);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future makeLog(String later_title, String later_message) async {
+    setState(() => title = later_title);
+    setState(() => message = later_message);
+
+    print(_image);
+
+    if (_image == null){
+      addMessageToGuestBookDefaultImage(title!, message!);
+    }
+    else{
+      addMessageToGuestBookWithImage(title!, message!, _image!);
+    }
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context){
+    final Argument oneContents = ModalRoute.of(context)!.settings.arguments as Argument;
+
     return Scaffold(
         appBar: AppBar(
           elevation: 0.1,
@@ -41,20 +140,54 @@ class DetailPage extends StatelessWidget {
             ),
 
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.add,
-                semanticLabel: 'add',
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/new-add');
-                // print('add button');
-              },
-            ),
-          ],
+
           iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
+          actions: <Widget>[
+            Align(
+              alignment : Alignment.center,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: const Color(0xFFef9a9a),
+                  shape:
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                ),
+                // onPressed: () {
+                onPressed: () async {
+                  print("temp..");
+
+                  if (_formKey.currentState!.validate()) {
+                    await makeLog(_controller_title.text, _controller.text);
+                    _controller.clear();
+                    _controller_title.clear();
+                  }
+                },
+                child: const Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white)
+                ),
+              ),
+            )
+
+          ],
         ),
+
+        // floatingActionButton: Container(
+        //   // alignment: Alignment.center,
+        //   padding: const EdgeInsets.fromLTRB(100, 0, 150, 0),
+        //   child: FloatingActionButton(
+        //     elevation: 0,
+        //     backgroundColor: const Color(0xFFef9a9a),
+        //     onPressed: () {
+        //       flutterDialog(context);
+        //       // 버튼을 누르면 실행될 코드 작성
+        //     },
+        //     child: const Icon(Icons.add_a_photo),
+        //   ),
+        // ),
+
         drawer: Drawer(
           backgroundColor: const Color(0xffFFCCCC),
           child: Column(
@@ -64,11 +197,28 @@ class DetailPage extends StatelessWidget {
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    const DrawerHeader(
-                        padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
-                        child: Text("tripTrip",
-                            style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                    Padding(padding: const EdgeInsets.fromLTRB(35, 60, 0, 50),
+                      child:Align(
+                        alignment: Alignment.topLeft,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/home');
+                          },
+                          style: TextButton.styleFrom(
+                              foregroundColor:  Colors.white,
+                              textStyle: const TextStyle(fontFamily: 'Quicksand', fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
+
+
+                          child: const Text("tripTrip"),
+                        ),
+                      ),
                     ),
+
+                    // const DrawerHeader(
+                    //     padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                    //     child: Text("tripTrip",
+                    //         style: TextStyle(fontFamily: 'Quicksand', fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
+                    // ),
                     Padding(padding: const EdgeInsets.only(left: 40),
                         child:ListTile(
                           minLeadingWidth: 20,
@@ -111,7 +261,7 @@ class DetailPage extends StatelessWidget {
                               children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                           ),
                           onTap: (){
-                            Navigator.pushNamed(context, '/');
+                            Navigator.pushNamed(context, '/home');
                           },
                         )
                     ),
@@ -141,8 +291,11 @@ class DetailPage extends StatelessWidget {
                       child: Container(
                           child: Column(
                             children: const <Widget>[
-                              ListTile(
-                                  title: Text('정보수정',style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 0, 15),
+                                child: ListTile(
+                                    title: Text('정보수정',style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
+                              )
                             ],
                           )
                       )
@@ -151,533 +304,264 @@ class DetailPage extends StatelessWidget {
             ],
           ),
         ),
-        body:StreamBuilder(
-          stream: _guestbook.orderBy('timestamp').snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData) {
-              return GridView.builder(
-                itemCount: snapshot.data!.docs.length,
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 8 / 9,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16),
-                itemBuilder: (BuildContext context, int index) {
-                  final DocumentSnapshot documentSnapshot =
-                  snapshot.data!.docs[index];
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        AspectRatio(
-                          aspectRatio: 10 / 5,
-                          child: Image.file(
-                            File(documentSnapshot['img_url']),
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                16.0, 12.0, 16.0, 0.0),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Text(documentSnapshot['name']),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 25,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                        style: const ButtonStyle(
-                                          alignment:
-                                          Alignment.topRight,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/detail',
-                                            // arguments: Argument(
-                                            //     message.id,
-                                            //     message.name,
-                                            //     message.title,
-                                            //     message.img_url,
-                                            //     message.message,
-                                            //     message.timestamp,
-                                            //     message.userId,
-                                          );
-                                        },
-                                        child: const Align(
-                                            alignment:
-                                            Alignment.topRight,
-                                            child: Text(
-                                              'more',
-                                              style: TextStyle(
-                                                fontSize: 10.0,
-                                              ),
-                                            )),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        )
-    );
-  }
-}
-
-
-class UserId {
-  late final String user_id;
-}
-
-class ApplicationState extends ChangeNotifier {
-  ApplicationState() {
-    init();
-  }
-
-  bool _loggedIn = false;
-  bool get loggedIn => _loggedIn;
-
-  int _attendees = 0;
-  int get attendees => _attendees;
-
-  Attending _attending = Attending.unknown;
-  StreamSubscription<DocumentSnapshot>? _attendingSubscription;
-  Attending get attending => _attending;
-  set attending(Attending attending) {
-    final userDoc = FirebaseFirestore.instance
-        .collection('attendees')
-        .doc(FirebaseAuth.instance.currentUser!.uid);
-    if (attending == Attending.yes) {
-      userDoc.set(<String, dynamic>{'attending': true});
-    } else {
-      userDoc.set(<String, dynamic>{'attending': false});
-    }
-  }
-
-  StreamSubscription<QuerySnapshot>? _guestBookSubscription;
-  List<GuestBookMessage> _guestBookMessages = [];
-  List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
-
-  Future<void> init() async {
-    FirebaseUIAuth.configureProviders([
-      EmailAuthProvider(),
-    ]);
-
-    FirebaseFirestore.instance
-        .collection('attendees')
-        .where('attending', isEqualTo: true)
-        .snapshots()
-        .listen((snapshot) {
-      _attendees = snapshot.docs.length;
-      notifyListeners();
-    });
-
-    FirebaseAuth.instance.userChanges().listen((user) {
-      // print(user);
-      if (user != null) {
-        _loggedIn = true;
-        _guestBookSubscription = FirebaseFirestore.instance
-            .collection('guestbook')
-            .orderBy('timestamp', descending: true)
-            .snapshots()
-            .listen((snapshot) {
-          _guestBookMessages = [];
-          for (final document in snapshot.docs) {
-            _guestBookMessages.add(
-              GuestBookMessage(
-                id: document.id,
-                name: document.data()['name'] as String,
-                title: document.data()['title'] as String,
-                img_url: document.data()['img_url'] as String,
-                message: document.data()['text'] as String,
-                userId: document.data()['userId'] as String,
-                // timestamp:
-                timestamp: DateTime.fromMillisecondsSinceEpoch(document.data()['timestamp']),
-              ),
-            );
-          }
-          notifyListeners();
-        });
-        _attendingSubscription = FirebaseFirestore.instance
-            .collection('attendees')
-            .doc(user.uid)
-            .snapshots()
-            .listen((snapshot) {
-          if (snapshot.data() != null) {
-            if (snapshot.data()!['attending'] as bool) {
-              _attending = Attending.yes;
-            } else {
-              _attending = Attending.no;
-            }
-          } else {
-            _attending = Attending.unknown;
-          }
-          notifyListeners();
-        });
-      } else {
-        _loggedIn = false;
-        _guestBookMessages = [];
-        _guestBookSubscription?.cancel();
-      }
-      notifyListeners();
-    });
-  }
-
-  Future<DocumentReference> addMessageToGuestBook(String title, String message) {
-    if (!_loggedIn) {
-      throw Exception('Must be logged in ');
-    }
-
-    return FirebaseFirestore.instance
-        .collection('guestbook')
-        .add(<String, dynamic>{
-      'text': message,
-      'title': title,
-      'likes':0,
-      'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
-      'userId': FirebaseAuth.instance.currentUser!.uid,
-    });
-  }
-
-  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
-    if (!_loggedIn) {
-      throw Exception('Must be logged in ');
-    }
-
-    return FirebaseFirestore.instance
-        .collection('guestbook')
-        .add(<String, dynamic>{
-      'text': message,
-      'title': title,
-      'likes':0,
-      'img_url':imgURL,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
-      'userId': FirebaseAuth.instance.currentUser!.uid,
-    });
-  }
-
-  Future<void> updateMessageToGuestBook(String newMessageId, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
-    if (!_loggedIn) {
-      throw Exception('Must be logged in ');
-    }
-
-    // var id = FirebaseFirestore.instance.collection('guestbook').doc(message).id;
-
-    return FirebaseFirestore.instance
-        .collection('guestbook')
-        .doc(newMessageId)
-        .update(<String, dynamic>{
-      'text': newMessageMessage,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      // 'name': newMessage_name,
-      // 'userId': newMessage_userId,
-    });
-
-    // var id = FirebaseFirestore.instance.collection('guestbook').doc(message).id;
-    //
-    // // print(id);
-    //
-    // return FirebaseFirestore.instance
-    //     .collection('guestbook')
-    //     .doc(id)
-    //     .update(<String, dynamic>{
-    //   'text': message,
-    //   'timestamp': DateTime.now().millisecondsSinceEpoch,
-    // });
-
-    // CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
-    // return guestbook
-    //     .doc(update)
-    //     .update({
-    //   'text': message,
-    // });
-
-    // return FirebaseFirestore.instance.collection('guestbook').doc(message.id)
-    //     .update({
-    //   'text': message,
-    // });
-    //
-    //   FirebaseFirestore.instance
-    //     .collection('guestbook')
-    //     .update({
-    //   'text': message,
-    //   // 'timestamp': DateTime.now().millisecondsSinceEpoch,
-    //   // 'name': FirebaseAuth.instance.currentUser!.displayName ==null? 'anoy' : FirebaseAuth.instance.currentUser!.displayName,
-    //   // 'userId': FirebaseAuth.instance.currentUser!.uid,
-    // });
-  }
-}
-
-class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
-  final String id;
-  final String name;
-  final String title;
-  final String img_url;
-  final String message;
-  final DateTime timestamp;
-  final String userId;
-}
-
-enum Attending { yes, no, unknown }
-
-class GuestBook extends StatefulWidget {
-  const GuestBook({super.key, required this.messages,});
-  final List<GuestBookMessage> messages; // new
-
-  @override
-  _GuestBookState createState() => _GuestBookState();
-}
-
-class _GuestBookState extends State<GuestBook> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
-  final _controller = TextEditingController();
-
-  final user_id = FirebaseAuth.instance.currentUser?.uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 8),
-        for (var message in widget.messages)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Paragraph('${message.name}: ${message.message}'), // ${message.id},
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                        child: Text('')//DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)),
-                    ),
-                  ],
-                ),
-              ),
-              if(message.userId == user_id)
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/update',
-                              arguments: Argument(
-                                  message.id,
-                                  message.name,
-                                  message.title,
-                                  message.img_url,
-                                  message.message,
-                                  message.timestamp,
-                                  message.userId
-                              )
-                          );
-                          // CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
-                          //
-                          // guestbook
-                          //     .doc(message.id)
-                          //     .update({
-                          // 'text': message,
-                          // });
-                        },
-                        icon: const Icon(Icons.edit)
-                    ),
-                    IconButton(
-                        onPressed: (){
-                          CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
-
-                          guestbook
-                              .doc(message.id)
-                              .delete();
-                        },
-                        icon: const Icon(Icons.delete_outline)
-
-                    ),
-                  ],
-                ),
-
-            ],
-          ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class Argument {
-  String id;
-  String name;
-  String title;
-  String img_url;
-  String message;
-  DateTime timestamp;
-  String userId;
-
-  Argument(this.id, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
-}
-
-class GuestBook3 extends StatefulWidget {
-  const GuestBook3({super.key, required this.updateMessage});
-  final FutureOr<void> Function(String message) updateMessage;
-
-  @override
-  _GuestBookState3 createState() => _GuestBookState3();
-}
-
-class _GuestBookState3 extends State<GuestBook3> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState3');
-  final _controller = TextEditingController();
-
-  final user_id = FirebaseAuth.instance.currentUser?.uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Row(
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Leave a message',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter your message to continue';
-                      }
-                      return null;
-                    },
-                    // onChanged: (value) {
-                    //   if(value.isNotEmpty) _controller.text = value;
-                    // },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                StyledButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await widget.updateMessage(_controller.text);
-                      _controller.clear();
-                    }
-                  },
-                  child: Row(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 30, 20),
+                  child:
+                  Row(
                     children: const [
-                      Icon(Icons.send),
-                      SizedBox(width: 4),
-                      Text('UPDATE'),
+                      Text(
+                        'trip',
+                        style: TextStyle(
+                          // fontFamily: 'Quicksand',
+                          color: Color(0xFFffcdd2),
+                          fontSize: 30,
+                        ),
+                      ),
+                      Text(
+                        '로그',
+                        style: TextStyle(
+                          // fontFamily: 'Quicksand',
+                            color: Colors.black54,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(30, 0, 0, 20),
+                  child:
+                  Text(
+                    '여행에 대한 기록을 자유롭게 기록하세요 !',
+                    style: TextStyle(
+                        color: Colors.black26,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+                Container(
+                  // height: 500,
+                  // margin: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.5,
+                      color: const Color(0xFFffcdd2),
+                    ),
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(15.0) // POINT
+                    ),
+                  ),
 
-      ],
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(35, 30, 30,20),
+                        child:
+                        Row(
+                          children: const [
+                            Icon(
+                              Icons.looks_one, // Icons.image_outlined,
+                              color: Colors.black54, // Color(0xFFef9a9a),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              '여행',
+                              style: TextStyle(
+                                color: Color(0xFFef9a9a), // Color(0xFFffcdd2),
+                                fontSize: 25,
+                              ),
+                            ),
+                            Text(
+                              '사진',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 25,
+                                // fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        // height: 500,
+                        // margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
+                        // padding: const EdgeInsets.all(8),
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(
+                        //     width: 1.5,
+                        //     color: const Color(0xFFffcdd2),
+                        //   ),
+                        //   borderRadius: const BorderRadius.all(
+                        //       Radius.circular(10.0) // POINT
+                        //   ),
+                        // ),
+
+                        child:
+                        SizedBox(
+                          width: double.infinity,
+                          child:
+                          _image == null
+                              ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                              : Image.file(File(_image!)),
+                        ),
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              await imgFromCamera();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: const Color(0xFFef9a9a),
+                              shape:
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                            ),
+                            child: const Text("카메라"),
+                          ),
+                          const SizedBox(width: 30),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await imgFromGallery();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: const Color(0xFFef9a9a),
+                              shape:
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                            ),
+                            child: const Text("갤러리"),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 18),
+                      const Divider(
+                        height: 8,
+                        thickness: 2,
+                        // indent: 8,
+                        // endIndent: 8,
+                        color: Color(0xFFffcdd2),
+                      ),
+                      const SizedBox(height: 28),
+
+                      Row(
+                        children: const [
+                          SizedBox(width: 35),
+                          Icon(
+                            Icons.looks_two, // Icons.image_outlined,
+                            color: Colors.black54, // Color(0xFFef9a9a),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            '로그',
+                            style: TextStyle(
+                              color: Color(0xFFef9a9a), // Color(0xFFffcdd2),
+                              fontSize: 25,
+                            ),
+                          ),
+                          Text(
+                            '작성',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 25,
+                              // fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: Form(
+                          key: _formKey,
+                          child:
+
+                          Column(
+                            children: [
+                              TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                style: const TextStyle(
+                                  color: Color(0xFFffcdd2),
+                                  fontSize: 30,
+                                ),
+                                controller: _controller_title,
+                                cursorColor: const Color(0xFFffcdd2),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText: '제목',
+                                  labelStyle: TextStyle(fontSize: 30.0, color: Colors.black54),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return '제목을 입력해주세요.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              // const SizedBox(height: 5),
+                              const Divider(
+                                height: 8,
+                                thickness: 2,
+                                // indent: 8,
+                                // endIndent: 8,
+                                color: Color(0xFFffcdd2),
+                              ),
+                              const SizedBox(height: 15),
+                              SizedBox(
+                                height: 320,
+                                // width: 200,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  controller: _controller,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: '내용을 입력해주세요.',
+                                    labelStyle: TextStyle(fontSize: 30.0, color: Colors.black54),
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return '내용을 한 자 이상 입력해주세요.';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+              ]
+          ),)
     );
   }
 }
-
-class YesNoSelection extends StatelessWidget {
-  const YesNoSelection(
-      {super.key, required this.state, required this.onSelection});
-  final Attending state;
-  final void Function(Attending selection) onSelection;
-
-  @override
-  Widget build(BuildContext context) {
-    switch (state) {
-      case Attending.yes:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(elevation: 0),
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-      case Attending.no:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              TextButton(
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(elevation: 0),
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-      default:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              StyledButton(
-                onPressed: () => onSelection(Attending.yes),
-                child: const Text('YES'),
-              ),
-              const SizedBox(width: 8),
-              StyledButton(
-                onPressed: () => onSelection(Attending.no),
-                child: const Text('NO'),
-              ),
-            ],
-          ),
-        );
-    }
-  }
-}
-
