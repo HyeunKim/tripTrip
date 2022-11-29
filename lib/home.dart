@@ -13,6 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'login.dart';
 import 'src/widgets.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -242,17 +243,25 @@ class HomePage extends StatelessWidget {
                                         Alignment.topRight,
                                       ),
                                       onPressed: () {
+                                        print("documnet id가");
+                                        print(documentSnapshot.id);
+                                        print("detail 페이지로 이동");
+                                        print(documentSnapshot['timestamp'].runtimeType);
+                                        // print(DateFormat('yy/MM/dd - HH:mm:ss.SS').parse(documentSnapshot['timestamp'].toString()));
+
                                         Navigator.pushNamed(
                                           context,
                                           '/detail',
                                           arguments: Argument(
-                                          documentSnapshot['id'],
+                                              documentSnapshot.id,
+                                          documentSnapshot['likes'],
                                             documentSnapshot['name'],
                                             documentSnapshot['title'],
                                             documentSnapshot['img_url'],
-                                            documentSnapshot['message'],
-                                            documentSnapshot['timestamp'],
-                                            documentSnapshot['userId']
+                                            documentSnapshot['title'], // message
+                                            // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                                              DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
+                                              documentSnapshot['userId']
                                           )
                                         );
                                       },
@@ -426,6 +435,7 @@ class ApplicationState extends ChangeNotifier {
             _guestBookMessages.add(
               GuestBookMessage(
                 id: document.id,
+                likes: document.data()['likes'] as int,
                 name: document.data()['name'] as String,
                 title: document.data()['title'] as String,
                 img_url: document.data()['img_url'] as String,
@@ -499,7 +509,7 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<void> updateMessageToGuestBook(String newMessageId, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
+  Future<void> updateMessageToGuestBook(String newMessageId, int newMessageLikes, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
@@ -552,8 +562,9 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
+  GuestBookMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
   final String id;
+  final int likes;
   final String name;
   final String title;
   final String img_url;
@@ -608,6 +619,7 @@ class _GuestBookState extends State<GuestBook> {
                           Navigator.pushNamed(context, '/update',
                           arguments: Argument(
                               message.id,
+                              message.likes,
                               message.name,
                               message.title,
                               message.img_url,
@@ -730,14 +742,15 @@ class _GuestBookState extends State<GuestBook> {
 
 class Argument {
   String id;
-  String name;
-  String title;
-  String img_url;
-  String message;
-  DateTime timestamp;
-  String userId;
+  int likes; //
+  String name;//
+  String title;//
+  String img_url;//
+  String message;//
+  DateTime timestamp;//
+  String userId;//
 
-  Argument(this.id, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
+  Argument(this.id, this.likes, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
 }
 
 class GuestBook3 extends StatefulWidget {
