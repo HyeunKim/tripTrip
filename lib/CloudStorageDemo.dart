@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
 
 class CloudStorageDemo extends StatefulWidget {
-  CloudStorageDemo({Key? key}) : super(key: key);
+  const CloudStorageDemo({Key? key}) : super(key: key);
 
   @override
   _CloudStorageDemoState createState() => _CloudStorageDemoState();
@@ -67,7 +67,7 @@ class _CloudStorageDemoState extends State<CloudStorageDemo> {
       appBar: AppBar(),
       body: Column(
         children: <Widget>[
-          SizedBox(
+          const SizedBox(
             height: 32,
           ),
           Center(
@@ -112,26 +112,24 @@ class _CloudStorageDemoState extends State<CloudStorageDemo> {
         context: context,
         builder: (BuildContext bc) {
           return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery'),
-                      onTap: () {
-                        imgFromGallery();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Gallery'),
                     onTap: () {
-                      imgFromCamera();
+                      imgFromGallery();
                       Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
           );
         });

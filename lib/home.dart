@@ -13,6 +13,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'login.dart';
 import 'src/widgets.dart';
+import 'package:intl/intl.dart';
+import 'drawer.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -48,104 +50,28 @@ class HomePage extends StatelessWidget {
               semanticLabel: 'add',
             ),
             onPressed: () {
-              Navigator.pushNamed(context, '/add');
-              print('add button');
+              Navigator.pushNamed(context, '/new-add');
+              // print('add button');
             },
           ),
         ],
         iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
       ),
-      drawer: Drawer(
-        backgroundColor: const Color(0xffFFCCCC),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              // ListView contains a group of widgets that scroll inside the drawer
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  const DrawerHeader(
-                      padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
-                      child: Text("tripTrip",
-                          style: TextStyle(fontSize: 50,color: Colors.white,fontWeight: FontWeight.w100))
-                  ),
-                  Padding(padding: const EdgeInsets.only(left: 40),
-                      child:ListTile(
-                        minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: const Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
-                        onTap:(){
-                          if(FirebaseAuth.instance.currentUser==null){
-                            Navigator.pushNamed(context, '/sign-in');
-                          }else{
-                            _signOut();
-                            Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
-                          }
-                        },
-                      )
-                  ),
-                  Padding(padding: const EdgeInsets.only(left: 40),
-                      child:ListTile(
-                        minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                        ),
-                        onTap: (){
-                          Navigator.pushNamed(context, '/');
-                          },
-                      )
-                  ),
-                  Padding(padding: const EdgeInsets.only(left: 40),
-                      child:ListTile(
-                        minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                        ),
-                        onTap: (){
-                          Navigator.pushNamed(context, '/');
-                        },
-                      )
-                  ),
-                  Padding(padding: const EdgeInsets.only(left: 40),
-                      child:ListTile(
-                        minLeadingWidth: 20,
-                        leading: const Text('/',style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
-                        title: RichText(text: const TextSpan(text: "trip",
-                            style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300),
-                            children: <TextSpan>[TextSpan(text: '코인', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
-                        ),
-                        onTap: (){
-                          Navigator.pushNamed(context, '/');
-                        },
-                      )
-                  ),
-                ],
-              ),
-            ),
-            // This container holds the align
-            Container(
-              // This align moves the children to the bottom
-                child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    // This container holds all the children that will be aligned
-                    // on the bottom and should not scroll with the above ListView
-                    child: Container(
-                        child: Column(
-                          children: const <Widget>[
-                            ListTile(
-                                title: Text('정보수정',style: TextStyle(fontSize: 35,color: Color(0xffff8484),fontWeight: FontWeight.w300))),
-                          ],
-                        )
-                    )
-                )
-            )
-          ],
+      drawer: DrawerCustom(),
+
+        floatingActionButton: Container(
+          // alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(100, 0, 150, 0),
+          child: FloatingActionButton(
+            elevation: 0,
+            backgroundColor: const Color(0xFFef9a9a),
+            onPressed: () {
+              flutterDialog(context);
+              // 버튼을 누르면 실행될 코드 작성
+            },
+            child: const Icon(Icons.add),
+          ),
         ),
-      ),
       body:StreamBuilder(
         stream: _guestbook.orderBy('timestamp').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -168,11 +94,15 @@ class HomePage extends StatelessWidget {
                     children: <Widget>[
                       /*AspectRatio(
                         aspectRatio: 10 / 5,
-                        child: Image.file(
-                          File(documentSnapshot['img']),
+                        child:
+                        documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                            ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                            :
+                        Image.file(
+                          File(documentSnapshot['img_url']),
                           fit: BoxFit.fitWidth,
                         ),
-                      ),*/
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(
@@ -205,11 +135,15 @@ class HomePage extends StatelessWidget {
                                           '/detail',
                                           arguments: Argument(
                                               documentSnapshot.id,
-                                              documentSnapshot['uid'],
-                                              documentSnapshot['img'],
-                                              documentSnapshot['name'],
-                                              documentSnapshot['price'],
-                                              documentSnapshot['description']),
+                                          documentSnapshot['likes'],
+                                            documentSnapshot['name'],
+                                            documentSnapshot['title'],
+                                            documentSnapshot['img_url'],
+                                            documentSnapshot['text'],
+                                            // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                                              DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
+                                              documentSnapshot['userId']
+                                          )
                                         );
                                       },
                                       child: const Align(
@@ -241,6 +175,65 @@ class HomePage extends StatelessWidget {
         },
       )
     );
+  }
+
+  void flutterDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        // barrierDismissible: false,
+        builder: (BuildContext context) {
+
+
+          return SizedBox(
+            width: 50,
+            child: AlertDialog(
+                backgroundColor: Color(0xFFffebee),
+              // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        // Navigator.pushNamed(context, '/앨범사진추가하는 페이지');
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor:  Color(0xFFe57373),
+                        textStyle: const TextStyle(fontSize: 20),
+                      ),
+                      child: const Text("앨범 사진 추가하기"),
+                    ),
+                  ),
+
+                  const Divider(
+                    height: 8,
+                    thickness: 2,
+                    indent: 8,
+                    endIndent: 8,
+                    color: Colors.white,
+                  ),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/new-add');
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor:  Color(0xFFe57373),
+                        textStyle: const TextStyle(fontSize: 20,),
+                      ),
+                      child: const Text("로그 추가하기"),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        );
   }
 }
 
@@ -293,7 +286,6 @@ class ApplicationState extends ChangeNotifier {
     });
 
     FirebaseAuth.instance.userChanges().listen((user) {
-      // print(user);
       if (user != null) {
         _loggedIn = true;
         _guestBookSubscription = FirebaseFirestore.instance
@@ -306,8 +298,10 @@ class ApplicationState extends ChangeNotifier {
             _guestBookMessages.add(
               GuestBookMessage(
                 id: document.id,
+                likes: document.data()['likes'] as int,
                 name: document.data()['name'] as String,
                 title: document.data()['title'] as String,
+                img_url: document.data()['img_url'] as String,
                 message: document.data()['text'] as String,
                 userId: document.data()['userId'] as String,
                 // timestamp:
@@ -352,13 +346,33 @@ class ApplicationState extends ChangeNotifier {
         .add(<String, dynamic>{
       'text': message,
       'title': title,
+      'likes':0,
+      'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ==null? 'anoy' : FirebaseAuth.instance.currentUser!.displayName,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
-  Future<void> updateMessageToGuestBook(String newMessage_id, String newMessage_name,  String newMessage_title, String newMessage_message, DateTime newMessage_time, String newMessage_userId) {
+  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in ');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('guestbook')
+        .add(<String, dynamic>{
+      'text': message,
+      'title': title,
+      'likes':0,
+      'img_url':imgURL,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
+  Future<void> updateMessageToGuestBook(String newMessageId, int newMessageLikes, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
@@ -367,9 +381,9 @@ class ApplicationState extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('guestbook')
-        .doc(newMessage_id)
+        .doc(newMessageId)
         .update(<String, dynamic>{
-      'text': newMessage_message,
+      'text': newMessageMessage,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       // 'name': newMessage_name,
       // 'userId': newMessage_userId,
@@ -411,10 +425,12 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.title, required this.message, required this.timestamp, required this.userId});
+  GuestBookMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
   final String id;
+  final int likes;
   final String name;
   final String title;
+  final String img_url;
   final String message;
   final DateTime timestamp;
   final String userId;
@@ -466,8 +482,10 @@ class _GuestBookState extends State<GuestBook> {
                           Navigator.pushNamed(context, '/update',
                           arguments: Argument(
                               message.id,
+                              message.likes,
                               message.name,
                               message.title,
+                              message.img_url,
                               message.message,
                               message.timestamp,
                               message.userId
@@ -503,17 +521,99 @@ class _GuestBookState extends State<GuestBook> {
       ],
     );
   }
+
+  // void flutterDialog(BuildContext context) {
+  //   showDialog(
+  //       context: context,
+  //       //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+  //       // barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //
+  //
+  //         return SizedBox(
+  //           width: 50,
+  //           child: AlertDialog(
+  //
+  //             // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(15.0)),
+  //             //Dialog Main Title
+  //             // title: Column(
+  //             //   children: <Widget>[
+  //             //     new Text("Dialog Title"),
+  //             //   ],
+  //             // ),
+  //             //
+  //             content: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Center(
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       // imgFromCamera();
+  //
+  //                       Navigator.pushNamed(context, '/temp-add');
+  //                       // Navigator.pop(context);
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       foregroundColor:  Colors.black54,
+  //                       textStyle: const TextStyle(fontSize: 20,),
+  //                     ),
+  //                     child: const Text("카메라"),
+  //                   ),
+  //                 ),
+  //
+  //                 const Divider(
+  //                   height: 8,
+  //                   thickness: 2,
+  //                   indent: 8,
+  //                   endIndent: 8,
+  //                   color: Color(0xFFffcdd2),
+  //                 ),
+  //                 Center(
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       foregroundColor:  Colors.black54,
+  //                       textStyle: const TextStyle(fontSize: 20,),
+  //                     ),
+  //                     child: const Text("갤러리"),
+  //                   ),
+  //                 ),
+  //                 // Text(
+  //                 //   "Dialog Content",
+  //                 // ),
+  //               ],
+  //             ),
+  //             // actions: <Widget>[
+  //             //   TextButton(
+  //             //     child: new Text("확인"),
+  //             //     onPressed: () {
+  //             //       Navigator.pop(context);
+  //             //     },
+  //             //   ),
+  //             // ],
+  //           ),
+  //         );
+  //       });
+  // }
+
 }
 
 class Argument {
   String id;
-  String name;
-  String title;
-  String message;
-  DateTime timestamp;
-  String userId;
+  int likes; //
+  String name;//
+  String title;//
+  String img_url;//
+  String message;//
+  DateTime timestamp;//
+  String userId;//
 
-  Argument(this.id, this.name, this.title, this.message, this.timestamp, this.userId);
+  Argument(this.id, this.likes, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
 }
 
 class GuestBook3 extends StatefulWidget {
