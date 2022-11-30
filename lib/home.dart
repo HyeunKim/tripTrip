@@ -81,7 +81,7 @@ class HomePage extends StatelessWidget {
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 8 / 9,
+                  childAspectRatio: 3 / 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16),
               itemBuilder: (BuildContext context, int index) {
@@ -89,19 +89,20 @@ class HomePage extends StatelessWidget {
                 snapshot.data!.docs[index];
                 return Card(
                   clipBehavior: Clip.antiAlias,
-                  child: Column(
+                  child: /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                      ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                      :*/
+                  Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
+                  /*Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      /*AspectRatio(
+                      AspectRatio(
                         aspectRatio: 10 / 5,
                         child:
                         documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
                             ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
                             :
-                        Image.file(
-                          File(documentSnapshot['img_url']),
-                          fit: BoxFit.fitWidth,
-                        ),
+                        Image.network(documentSnapshot['img_url'],fit: BoxFit.fitWidth),
                       ),
                       Expanded(
                         child: Padding(
@@ -164,7 +165,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ),*/
                 );
               },
             );

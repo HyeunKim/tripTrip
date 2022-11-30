@@ -25,6 +25,7 @@ class _newAddScreenState extends State<newAddScreen>{
   String? title;
   String? message;
   String? _image;
+  String? _netImage;
 
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
   final _controller_title = TextEditingController();
@@ -71,6 +72,7 @@ class _newAddScreenState extends State<newAddScreen>{
           .ref(destination)
           .child('file/');
       await ref.putFile(_photo!);
+      _netImage = await ref.getDownloadURL();
     } catch (e) {
       print('error occured');
     }
@@ -112,7 +114,7 @@ class _newAddScreenState extends State<newAddScreen>{
       addMessageToGuestBookDefaultImage(title!, message!);
     }
     else{
-      addMessageToGuestBookWithImage(title!, message!, _image!);
+      addMessageToGuestBookWithImage(title!, message!, _netImage!);
     }
   }
 
