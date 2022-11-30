@@ -166,7 +166,7 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      AspectRatio(
+                      /*AspectRatio(
                         aspectRatio: 10 / 5,
                         child: Image.file(
                           File(documentSnapshot['img']),
