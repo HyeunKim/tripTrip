@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '642158587747',
     projectId: 'team-project-398aa',
     storageBucket: 'team-project-398aa.appspot.com',
+    androidClientId: '642158587747-2oca5b3bk2af9658p5qq3vvqe334jme0.apps.googleusercontent.com',
     iosClientId: '642158587747-3camh4sdvqu5c2hqcgogssk2h1l1tntn.apps.googleusercontent.com',
     iosBundleId: 'com.example.triptrip',
   );
