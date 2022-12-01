@@ -10,6 +10,7 @@ import 'CloudStorageDemo.dart';
 import 'detail.dart';
 import 'tempAdd.dart';
 import 'newAddPage.dart';
+import 'coin.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -39,6 +40,10 @@ class App extends StatelessWidget {
         '/detail': ((context) {
           // return ProfilePage(providers: [], actions: [],);
           return DetailPage();
+        }),
+        '/coin': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return CoinPage();
         }),
         '/camera': ((context) {
           // return ProfilePage(providers: [], actions: [],);
