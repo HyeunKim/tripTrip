@@ -383,6 +383,7 @@ class _newAddScreenState extends State<newAddScreen>{
                                 height: 320,
                                 // width: 200,
                                 child: TextFormField(
+                                  cursorColor: Color(0xFFffcdd2),
                                   keyboardType: TextInputType.multiline,
                                   maxLines: null,
                                   style: const TextStyle(

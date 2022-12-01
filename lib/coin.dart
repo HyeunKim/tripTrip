@@ -8,61 +8,54 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
-import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'drawer.dart';
-import 'home.dart';
 
-class UpdatePage extends StatefulWidget{
-  const UpdatePage({Key? key}) : super(key:key);
+class CoinPage extends StatefulWidget{
+  const CoinPage({Key? key}) : super(key:key);
 
   @override
-  _UpdatePageState createState() => _UpdatePageState();
+  _CoinPagenState createState() => _CoinPagenState();
 }
 
-class _UpdatePageState extends State<UpdatePage>{
+class _CoinPagenState extends State<CoinPage>{
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
-  String? new_title;
-  String? new_message;
-  String? new_img;
-
-  String? _id;
+  String? title;
+  String? message;
   String? _image;
-  String? _title;
-  String? _content;
-  DateTime? _date;
-  // String? _real_date;
-  int? _likes;
-  // String? _userId;
-  // String? _name;
+  String? _netImage;
 
-  // final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
-  // // final _controller_title = TextEditingController(text: {_title});
-  // final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+  final _controller_title = TextEditingController();
+  final _controller = TextEditingController();
 
-  Future<void> updateMessageToGuestBookDefaultImage(String title, String message) {
+  Future<DocumentReference> addMessageToGuestBookDefaultImage(String title, String message) {
     return FirebaseFirestore.instance
         .collection('guestbook')
-        .doc(_id)
-        .update(<String, dynamic>{
+        .add(<String, dynamic>{
       'text': message,
       'title': title,
+      'likes':0,
       'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
       'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
-  Future<void> updateMessageToGuestBookWithImage(String title, String message, String imgURL) {
+  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
     return FirebaseFirestore.instance
         .collection('guestbook')
-        .doc(_id)
-        .update(<String, dynamic>{
+        .add(<String, dynamic>{
+      'text': message,
       'title': title,
-      'text' : message,
-      'img_url' : imgURL,
+      'likes':0,
+      'img_url':imgURL,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
@@ -79,6 +72,7 @@ class _UpdatePageState extends State<UpdatePage>{
           .ref(destination)
           .child('file/');
       await ref.putFile(_photo!);
+      _netImage = await ref.getDownloadURL();
     } catch (e) {
       print('error occured');
     }
@@ -89,9 +83,8 @@ class _UpdatePageState extends State<UpdatePage>{
 
     setState(() {
       if (pickedFile != null) {
-        setState(() => new_img = pickedFile.path);
-        setState(() => _photo = File(new_img!));
-        setState(() => new_img = pickedFile.path);
+        setState(() => _image = pickedFile.path);
+        setState(() => _photo = File(_image!));
         uploadFile();
       } else {
         print('No image selected.');
@@ -104,8 +97,8 @@ class _UpdatePageState extends State<UpdatePage>{
 
     setState(() {
       if (pickedFile != null) {
-        setState(() => new_img = pickedFile.path);
-        _photo = File(new_img!);
+        setState(() => _image = pickedFile.path);
+        _photo = File(_image!);
         uploadFile();
       } else {
         print('No image selected.');
@@ -113,45 +106,20 @@ class _UpdatePageState extends State<UpdatePage>{
     });
   }
 
-  Future makeNewLog(String later_title, String later_message) async {
-    setState(() => new_title = later_title);
-    setState(() => new_message = later_message);
+  Future makeLog(String later_title, String later_message) async {
+    setState(() => title = later_title);
+    setState(() => message = later_message);
 
-    if (new_img == null){
-      updateMessageToGuestBookDefaultImage(new_title!, new_message!);
+    if (_image == null){
+      addMessageToGuestBookDefaultImage(title!, message!);
     }
     else{
-      updateMessageToGuestBookWithImage(new_title!, new_message!, new_img!);
+      addMessageToGuestBookWithImage(title!, message!, _netImage!);
     }
   }
 
   @override
   Widget build(BuildContext context){
-    final Argument oneContents = ModalRoute.of(context)!.settings.arguments as Argument;
-
-    setState(() {
-      _id = oneContents.id;
-      _title = oneContents.title;
-      _content = oneContents.message;
-      _image = oneContents.img_url;
-      _likes = oneContents.likes;
-      _date = oneContents.timestamp;
-      // _userId = oneContents.userId;
-      // _name = oneContents.name;
-      // _real_date = DateFormat('yyyy년 MM월 dd일').format(_date!); // DateFormat('yyyy년 MM월 dd일 HH:mm:ss').format(_date!);
-    });
-
-    final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
-    final _controller_title = TextEditingController(text: _title);
-    final _controller = TextEditingController(text: _content);
-
-    if (_image != "https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg"){
-      setState(() {
-        new_img = _image;
-      });
-    }
-
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -168,35 +136,35 @@ class _UpdatePageState extends State<UpdatePage>{
         ),
 
         iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
-        actions: <Widget>[
-          Align(
-            alignment : Alignment.center,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: const Color(0xFFef9a9a),
-                shape:
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-              ),
-              // onPressed: () {
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  await makeNewLog(_controller_title.text, _controller.text);
-                  _controller.clear();
-                  _controller_title.clear();
-                  flutterDialog(context);
-                }
-              },
-              child: const Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white)
-              ),
-            ),
-          )
-
-        ],
+        // actions: <Widget>[
+        //   Align(
+        //     alignment : Alignment.center,
+        //     child: ElevatedButton(
+        //       style: ElevatedButton.styleFrom(
+        //         elevation: 0,
+        //         backgroundColor: const Color(0xFFef9a9a),
+        //         shape:
+        //         RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(18.0),
+        //         ),
+        //       ),
+        //       // onPressed: () {
+        //       onPressed: () async {
+        //         if (_formKey.currentState!.validate()) {
+        //           await makeLog(_controller_title.text, _controller.text);
+        //           _controller.clear();
+        //           _controller_title.clear();
+        //           flutterDialog(context);
+        //         }
+        //       },
+        //       child: const Text(
+        //           "Save",
+        //           style: TextStyle(color: Colors.white)
+        //       ),
+        //     ),
+        //   )
+        //
+        // ],
       ),
 
       drawer: DrawerCustom(),
@@ -220,20 +188,10 @@ class _UpdatePageState extends State<UpdatePage>{
                       ),
                     ),
                     Text(
-                      '로그',
+                      '코인',
                       style: TextStyle(
                         // fontFamily: 'Quicksand',
                           color: Colors.black54,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      '수정',
-                      style: TextStyle(
-                        // fontFamily: 'Quicksand',
-                          color: Color(0xFFffcdd2),
                           fontSize: 30,
                           fontWeight: FontWeight.bold
                       ),
@@ -242,18 +200,27 @@ class _UpdatePageState extends State<UpdatePage>{
                   ],
                 ),
               ),
-              Padding(
+
+              const Padding(
                 padding: EdgeInsets.fromLTRB(30, 0, 0, 20),
                 child:
                 Text(
-                  "제목 [ ${_title!} ] 글을 수정하고 있습니다.",
-                  style: const TextStyle(
+                  '여행을 하면서 돈 지출을 관리해보세요 !',
+                  style: TextStyle(
                       color: Colors.black26,
                       fontSize: 15,
                       fontWeight: FontWeight.bold
                   ),
                 ),
               ),
+              const Divider(
+                height: 8,
+                thickness: 2,
+                indent: 15,
+                endIndent: 15,
+                color: Color(0xFFffcdd2),
+              ),
+
               Container(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                 decoration: BoxDecoration(
@@ -280,14 +247,14 @@ class _UpdatePageState extends State<UpdatePage>{
                           ),
                           SizedBox(width: 8),
                           Text(
-                            '사진',
+                            '여행',
                             style: TextStyle(
                               color: Color(0xFFef9a9a), // Color(0xFFffcdd2),
                               fontSize: 25,
                             ),
                           ),
                           Text(
-                            '수정',
+                            '사진',
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 25,
@@ -306,9 +273,9 @@ class _UpdatePageState extends State<UpdatePage>{
                       SizedBox(
                         width: double.infinity,
                         child:
-                        /*new_img == null
+                        _image == null
                             ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                            : */Image.network(new_img!),
+                            : Image.file(File(_image!)),
                       ),
                     ),
 
@@ -373,7 +340,7 @@ class _UpdatePageState extends State<UpdatePage>{
                           ),
                         ),
                         Text(
-                          '수정',
+                          '작성',
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 25,
@@ -405,7 +372,6 @@ class _UpdatePageState extends State<UpdatePage>{
                                 labelText: '제목',
                                 labelStyle: TextStyle(fontSize: 30.0, color: Colors.black54),
                               ),
-                              // initialValue: "hi",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return '제목을 입력해주세요.';
@@ -426,7 +392,6 @@ class _UpdatePageState extends State<UpdatePage>{
                               height: 320,
                               // width: 200,
                               child: TextFormField(
-                                cursorColor: Color(0xFFffcdd2),
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 style: const TextStyle(
@@ -484,7 +449,7 @@ class _UpdatePageState extends State<UpdatePage>{
                 Center(
                   child:
                   Text(
-                    "수정하시겠습니까?",
+                    "저장되었습니다.",
                     style: TextStyle(color: Color(0xFFe57373), fontSize: 20), // Color(0xFFe57373)
                   ),
                 ),
