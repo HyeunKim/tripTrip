@@ -254,9 +254,9 @@ class _DetailPageState extends State<DetailPage>{
                         SizedBox(
                           width: double.infinity,
                           child:
-                          _image == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                          /*_image == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
                               ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                              : Image.file(File(_image!)),
+                              : */Image.network(_image!),
                         ),
                       ),
 

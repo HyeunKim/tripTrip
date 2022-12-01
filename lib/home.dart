@@ -89,10 +89,30 @@ class HomePage extends StatelessWidget {
                 snapshot.data!.docs[index];
                 return Card(
                   clipBehavior: Clip.antiAlias,
-                  child: /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(
+                          context,
+                          '/detail',
+                          arguments: Argument(
+                              documentSnapshot.id,
+                              documentSnapshot['likes'],
+                              documentSnapshot['name'],
+                              documentSnapshot['title'],
+                              documentSnapshot['img_url'],
+                              documentSnapshot['text'],
+                              // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                              DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
+                              documentSnapshot['userId']
+                          )
+                      );
+                    },
+                    child: Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
+                  )
+                  /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
                       ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
                       :*/
-                  Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
+
                   /*Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
