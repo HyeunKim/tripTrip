@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';                 // new
 import 'app.dart';
 import 'home.dart';
-import 'login.dart';
 import 'firebase_options.dart';
 
 

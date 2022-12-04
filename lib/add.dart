@@ -1,10 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'home.dart';
-import 'guestBook2.dart';
-
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,17 +10,8 @@ import 'package:path/path.dart';
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'firebase_options.dart';
-// import 'src/authentication.dart';
-import 'src/widgets.dart';
-import 'package:intl/intl.dart';
 
 class AddPage extends StatefulWidget{
   const AddPage({Key? key}) : super(key:key);

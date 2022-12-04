@@ -7,7 +7,6 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-// import 'src/authentication.dart';
 import 'src/widgets.dart';
 import 'package:intl/intl.dart';
 
