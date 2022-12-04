@@ -305,10 +305,7 @@ class _UpdatePageState extends State<UpdatePage>{
                       child:
                       SizedBox(
                         width: double.infinity,
-                        child:
-                        /*new_img == null
-                            ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                            : */Image.network(new_img!),
+                        child: Image.network(new_img!),
                       ),
                     ),
 
@@ -454,9 +451,7 @@ class _UpdatePageState extends State<UpdatePage>{
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
-
             ]
         ),
       ),
