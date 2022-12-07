@@ -204,7 +204,7 @@ class _newAddScreenState extends State<newAddScreen>{
                 padding: EdgeInsets.fromLTRB(30, 0, 0, 20),
                 child:
                   Text(
-                    '여행에 대한 기록을 자유롭게 기록하세요 !',
+                    '여행에 대한 내용을 자유롭게 기록하세요 !',
                     style: TextStyle(
                         color: Colors.black26,
                         fontSize: 15,

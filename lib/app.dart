@@ -11,6 +11,7 @@ import 'detail.dart';
 import 'tempAdd.dart';
 import 'newAddPage.dart';
 import 'coin.dart';
+import 'myPage.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -72,6 +73,10 @@ class App extends StatelessWidget {
         '/profile': ((context) {
           // return ProfilePage(providers: [], actions: [],);
           return const ProfilePage();
+        }),
+        '/my-page': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return const MyPage();
         })
       },
       // title: 'Firebase Meetup',
