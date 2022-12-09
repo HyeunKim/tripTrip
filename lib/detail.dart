@@ -120,15 +120,17 @@ class _DetailPageState extends State<DetailPage> {
           //
           // ],
         ),
-        drawer: DrawerCustom(),
+        // drawer: DrawerCustom(),
         body: StreamBuilder(
             stream: likeCol.snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) _likes = snapshot.data!.docs.length;
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              return
+                // SingleChildScrollView(
+                // scrollDirection: Axis.vertical,
+                // child:
+                ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 30, 20),
@@ -214,6 +216,7 @@ class _DetailPageState extends State<DetailPage> {
                       //     ),
                       //   ),
                       // ),
+
                       Container(
                         // height: 500,
                         // margin: const EdgeInsets.all(10),
@@ -231,8 +234,8 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                         ),
 
-                        child: ListView(
-                          shrinkWrap: true,
+                        child: Column(
+                          // shrinkWrap: true,
                           children: <Widget>[
                             Padding(
                               padding:
@@ -260,12 +263,17 @@ class _DetailPageState extends State<DetailPage> {
                                   ]),
                             ),
 
+
                             Padding(
                               padding: const EdgeInsets.fromLTRB(35, 0, 30, 25),
-                              child: Text(
-                                  style: const TextStyle(
-                                      fontSize: 30.0, color: Color(0xFFef9a9a)),
-                                  _title!),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                    style: const TextStyle(
+                                        fontSize: 30.0, color: Color(0xFFef9a9a)),
+                                    _title!),
+                              ),
+
                             ),
                             const Divider(
                               height: 8,
@@ -357,7 +365,8 @@ class _DetailPageState extends State<DetailPage> {
                       ),
 
                       const SizedBox(height: 30),
-                    ]),
+                    ]
+                // ),
               );
             }) /**/
         );

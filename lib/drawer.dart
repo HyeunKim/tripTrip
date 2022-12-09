@@ -71,7 +71,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                           children: <TextSpan>[TextSpan(text: '앨범', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                       ),
                       onTap: (){
-                        Navigator.pushNamed(context, '/sign-in');
+                        Navigator.pushNamed(context, '/album');
                       },
                     )
                 ),
