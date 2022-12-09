@@ -85,12 +85,17 @@ class _DetailPageState extends State<DetailPage> {
           elevation: 0.1,
           backgroundColor: Colors.white70,
           centerTitle: true,
-          title: const Text(
-            'tripTrip',
-            style: TextStyle(
-              fontFamily: 'Quicksand',
-              color: Color(0xFFf8bbd0),
-              fontSize: 30,
+          title: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/home');
+            },
+            child: const Text(
+              'tripTrip',
+              style: TextStyle(
+                fontFamily: 'Quicksand',
+                color: Color(0xFFf8bbd0),
+                fontSize: 30,
+              ),
             ),
           ),
 
