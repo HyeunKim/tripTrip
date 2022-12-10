@@ -3,15 +3,11 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_3d/gallery3d.dart';
-import 'package:outline_search_bar/outline_search_bar.dart';
-import 'package:search_page/search_page.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
-import 'src/widgets.dart';
 import 'drawer.dart';
+import 'home.dart';
 
 
 class LogPage extends StatefulWidget{
@@ -150,7 +146,6 @@ class _LogPageState extends State<LogPage>{
                           Text(
                             '로그',
                             style: TextStyle(
-                              // fontFamily: 'Quicksand',
                                 color: Colors.black54,
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold
@@ -324,18 +319,5 @@ class GuestBookMessage {
   final String message;
   final DateTime timestamp;
   final String userId;
-}
-
-class Argument {
-  String id;
-  int likes; //
-  String name;//
-  String title;//
-  String img_url;//
-  String message;//
-  DateTime timestamp;//
-  String userId;//
-
-  Argument(this.id, this.likes, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
 }
 
