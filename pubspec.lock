@@ -24,18 +24,15 @@ packages:
       sha256: "120fe7ce25377ba616bb210e7584983b163861f45d6ec446744d507e3943881b"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "5.3.1"
-=======
-    version: "5.2.0"
   archive:
     dependency: transitive
     description:
       name: archive
-      url: "https://pub.dartlang.org"
+      sha256: ed7cc591a948744994714375caf9a2ce89e1d82e8243997c8a2994d57181c212
+      url: "https://pub.dev"
     source: hosted
     version: "3.3.5"
->>>>>>> main
   args:
     dependency: transitive
     description:
@@ -160,7 +157,8 @@ packages:
     dependency: transitive
     description:
       name: csslib
-      url: "https://pub.dartlang.org"
+      sha256: b36c7f7e24c0bdf1bf9a3da461c837d1de64b9f8beb190c9011d8c72a3dfd745
+      url: "https://pub.dev"
     source: hosted
     version: "0.17.2"
   cupertino_icons:
@@ -404,7 +402,8 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gif
-      url: "https://pub.dartlang.org"
+      sha256: b13d7e484e40685e9236ffbaddf012c2448a2e2c1ac48bed345184dd7bc87f88
+      url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
   flutter_keyboard_visibility:
@@ -472,7 +471,8 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_native_splash
-      url: "https://pub.dartlang.org"
+      sha256: "6777a3abb974021a39b5fdd2d46a03ca390e03903b6351f21d10e7ecc969f12d"
+      url: "https://pub.dev"
     source: hosted
     version: "2.2.16"
   flutter_plugin_android_lifecycle:
@@ -601,7 +601,8 @@ packages:
     dependency: transitive
     description:
       name: html
-      url: "https://pub.dartlang.org"
+      sha256: d9793e10dbe0e6c364f4c59bf3e01fb33a9b2a674bc7a1081693dba0614b6269
+      url: "https://pub.dev"
     source: hosted
     version: "0.15.1"
   http:
@@ -632,7 +633,8 @@ packages:
     dependency: transitive
     description:
       name: image
-      url: "https://pub.dartlang.org"
+      sha256: f6ffe2895e3c86c6ad5a27e6302cf807403463e397cb2f0c580f619ac2fa588b
+      url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
   image_picker:
@@ -887,7 +889,8 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      url: "https://pub.dartlang.org"
+      sha256: db7306cf0249f838d1a24af52b5a5887c5bf7f31d8bb4e827d071dc0939ad346
+      url: "https://pub.dev"
     source: hosted
     version: "3.6.2"
   process:
@@ -1059,7 +1062,8 @@ packages:
     dependency: transitive
     description:
       name: universal_io
-      url: "https://pub.dartlang.org"
+      sha256: "79f78ddad839ee3aae3ec7c01eb4575faf0d5c860f8e5223bc9f9c17f7f03cef"
+      url: "https://pub.dev"
     source: hosted
     version: "2.0.4"
   url_launcher:
@@ -1141,46 +1145,47 @@ packages:
       sha256: "80b3257d1492ce4d091729e3a67a60407d227c27241d6927be0130c98e741803"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "2.1.4"
-=======
-    version: "2.1.2"
   video_player:
     dependency: "direct main"
     description:
       name: video_player
-      url: "https://pub.dartlang.org"
+      sha256: "460f2acac1d4fe73046262a36fe4e06a2166d097eac2a823a27825326152ecd9"
+      url: "https://pub.dev"
     source: hosted
     version: "2.4.9"
   video_player_android:
     dependency: transitive
     description:
       name: video_player_android
-      url: "https://pub.dartlang.org"
+      sha256: d4d7313d1dc6f14d3414b98e2b268c3f34f4ac4ce4af51cf905e9a438edf0c77
+      url: "https://pub.dev"
     source: hosted
     version: "2.3.9"
   video_player_avfoundation:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      url: "https://pub.dartlang.org"
+      sha256: "3df559495634bba8feb24439ac0a28a380d4ff96be7990811dc4ec81299e8cfa"
+      url: "https://pub.dev"
     source: hosted
     version: "2.3.7"
   video_player_platform_interface:
     dependency: transitive
     description:
       name: video_player_platform_interface
-      url: "https://pub.dartlang.org"
+      sha256: "318a6d20577e1c78cf0bf40670883cc571ea860c72a4f7426d7dacce4bdd4343"
+      url: "https://pub.dev"
     source: hosted
     version: "5.1.4"
   video_player_web:
     dependency: transitive
     description:
       name: video_player_web
-      url: "https://pub.dartlang.org"
+      sha256: ed949a3df5fe88533254bbdd242c3d8eea19ecbc4e7af90da84ef087533f584b
+      url: "https://pub.dev"
     source: hosted
     version: "2.0.12"
->>>>>>> main
   watcher:
     dependency: transitive
     description:
