@@ -43,39 +43,83 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot){
         if(!snapshot.hasData){
-          return Scaffold(
-            body: SafeArea(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  children: <Widget>[
-                    const SizedBox(height: 80.0),
-                    Column(
-                      children: <Widget>[
-                        //Image.asset('assets/diamond.png'),
-                        const SizedBox(height: 16.0),
-                        const Text('SHRINE'),
-                      ],
-                    ),
-                    const SizedBox(height: 120.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                            child: const Text("Google"), onPressed: signInWithGoogle
-                        ),
-                        ElevatedButton(
-                            child: const Text("Guest"), onPressed:
-                        FirebaseAuth.instance.signInAnonymously
-                        ),
-                      ],
-                    ),
-                  ],
-                )
+          return Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/img.png'), // 배경 이미지
+              ),
             ),
+            child:Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    children: <Widget>[
+                      SizedBox(height: screenHeight * 0.2),
+                      Column(
+                        children: [
+                          Stack(
+                            children: <Widget>[
+                              // Stroked text as border.
+                              Text(
+                                'tripTrip',
+                                style: TextStyle(
+                                  fontSize: 70,
+                                  fontWeight: FontWeight.w100,
+                                  foreground: Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 3
+                                    ..color = const Color(0xFFE01717),
+                                ),
+                              ),
+                              // Solid text as fill.
+                              const Text(
+                                'tripTrip',
+                                style: TextStyle(
+                                  fontSize: 70,
+                                  fontWeight: FontWeight.w100,
+                                  color: const Color(0xFFF0D4ED),
+                                )
+                              )
+                            ]
+                          )
+                        ]
+                      ),
+                      SizedBox(height: screenHeight*0.25),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            child: const Text(
+                              "Google",
+                              style: TextStyle(fontSize: 20)
+                            ),
+                            onPressed: signInWithGoogle,
+                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0x4DD87B7B)),
+                          ),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            child: const Text(
+                                "Guest",
+                                style: TextStyle(fontSize: 20)
+                            ),
+                            onPressed: signInWithGoogle,
+                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0x4DD87B7B)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+            )
           );
         }
         else{

@@ -219,8 +219,8 @@ class _DetailPageState extends State<DetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.favorite),
-                                      color: Color(0xFFffcdd2),
+                                      icon: _likes == likes ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
+                                      color: const Color(0xFFffcdd2),
                                       onPressed: () {
                                         if (_likes == likes) {
                                           addlikes();
