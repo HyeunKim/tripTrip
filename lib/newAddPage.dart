@@ -229,6 +229,7 @@ class _newAddScreenState extends State<newAddScreen>{
                   ),
 
                   child: ListView(
+                    physics: const ScrollPhysics(),
                       shrinkWrap: true,
                       children: <Widget>[
                         Padding(
