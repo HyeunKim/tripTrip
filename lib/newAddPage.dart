@@ -170,9 +170,7 @@ class _newAddScreenState extends State<newAddScreen>{
 
           ],
         ),
-
-        drawer: DrawerCustom(),
-
+        
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child:Column(
