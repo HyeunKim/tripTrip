@@ -48,17 +48,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                       leading: const Text('/',style: TextStyle(fontFamily: 'Quicksand',fontSize: 40,color: Colors.white,fontWeight: FontWeight.w100)),
                       title: const Text("MY",style: TextStyle(fontSize: 25,color: Color(0xffff8484),fontWeight: FontWeight.w300 ),),
                       onTap:(){
-                        if(FirebaseAuth.instance.currentUser==null){
-                          Navigator.pushNamed(context, '/sign-in');
-                        }else{
-                          FirebaseAuth.instance.signOut();
-                          if(FirebaseAuth.instance.currentUser==null){
-                            Navigator.pushNamed(context, '/sign-in');
-                          }
-                          // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
-                          // _signOut();
-                          // Navigator.popUntil(context, ModalRoute.withName('/sign-in'));//Navigator.pushNamed(context, '/MY');
-                        }
+                        Navigator.pushNamed(context, '/my-page');
                       },
                     )
                 ),

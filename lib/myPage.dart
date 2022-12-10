@@ -10,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'home.dart';
 import 'drawer.dart';
 
-
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
 
@@ -20,75 +19,162 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final currentUser = FirebaseAuth.instance;
+  final CollectionReference album =
+      FirebaseFirestore.instance.collection('album_title');
+  final CollectionReference log =
+      FirebaseFirestore.instance.collection('guestbook');
 
-  final CollectionReference _guestbook =
-  FirebaseFirestore.instance.collection('guestbook');
-
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(
-            elevation: 0.1,
-            backgroundColor: Colors.white70,
-            centerTitle: true,
-            title: const Text(
-              'tripTrip',
-              style: TextStyle(
-                fontFamily: 'Quicksand',
-                color: Color(0xFFf8bbd0),
-                fontSize: 30,
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0.1,
+          backgroundColor: Colors.white70,
+          centerTitle: true,
+          title: const Text(
+            'tripTrip',
+            style: TextStyle(
+              fontFamily: 'Quicksand',
+              color: Color(0xFFf8bbd0),
+              fontSize: 30,
             ),
-            iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
           ),
-          drawer: DrawerCustom(),
-
-          body:StreamBuilder(
-            stream: _guestbook.orderBy('timestamp').snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasData) {
-                return GridView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 3 / 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16),
-                  itemBuilder: (BuildContext context, int index) {
-                    final DocumentSnapshot documentSnapshot =
-                    snapshot.data!.docs[index];
-                    return Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(
-                                  context,
-                                  '/detail',
-                                  arguments: Argument(
-                                      documentSnapshot.id,
-                                      documentSnapshot['likes'],
-                                      documentSnapshot['name'],
-                                      documentSnapshot['title'],
-                                      documentSnapshot['img_url'],
-                                      documentSnapshot['text'],
-                                      // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
-                                      DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
-                                      documentSnapshot['userId']
-                                  )
-                              );
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.popUntil(context, ModalRoute.withName('/sign-in'));
+              },
+            )
+          ],
+          iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
+        ),
+        drawer: DrawerCustom(),
+        body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
+                  child: Row(
+                    children: const [
+                      Text(
+                        'MY',
+                        style: TextStyle(
+                          // fontFamily: 'Quicksand',
+                          color: Color(0xFFffcdd2),
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  thickness: 1,
+                  color: Color(0xffff8484),
+                  indent: 5,
+                  endIndent: 5,
+                ),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ListTile(
+                        title: RichText(
+                            text: const TextSpan(
+                                text: "MY",
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    color: Color(0xffff8484),
+                                    fontWeight: FontWeight.w300),
+                                children: <TextSpan>[
+                              TextSpan(
+                                  text: 'trip앨범',
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w300))
+                            ])),
+                        trailing: InkWell(
+                            onTap: () {
+                              //Navigator.pushNamed(context, '/album');
                             },
-                            child: Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
-                        )
+                            child: Icon(Icons.arrow_forward_ios)))),
+                StreamBuilder(
+                    stream: album.snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: null,
+                      );
+                    }),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ListTile(
+                        title: RichText(
+                            text: const TextSpan(
+                                text: "MY",
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    color: Color(0xffff8484),
+                                    fontWeight: FontWeight.w300),
+                                children: <TextSpan>[
+                              TextSpan(
+                                  text: 'trip로그',
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w300))
+                            ])),
+                        trailing: InkWell(
+                            onTap: () {
+                              //Navigator.pushNamed(context, '/album');
+                            },
+                            child: Icon(Icons.arrow_forward_ios)))),
+                StreamBuilder(
+                  stream: log.orderBy('timestamp').snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 3 / 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16),
+                        itemBuilder: (BuildContext context, int index) {
+                          final DocumentSnapshot documentSnapshot =
+                              snapshot.data!.docs[index];
+                          return Card(
+                              clipBehavior: Clip.antiAlias,
+                              child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/detail',
+                                        arguments: Argument(
+                                            documentSnapshot.id,
+                                            documentSnapshot['likes'],
+                                            documentSnapshot['name'],
+                                            documentSnapshot['title'],
+                                            documentSnapshot['img_url'],
+                                            documentSnapshot['text'],
+                                            // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                documentSnapshot['timestamp']),
+                                            documentSnapshot['userId']));
+                                  },
+                                  child: Image.network(
+                                      documentSnapshot['img_url'],
+                                      fit: BoxFit.cover)));
+                        },
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
                   },
-                );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          )
-      );
+                )
+              ],
+            )));
   }
 }

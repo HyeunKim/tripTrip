@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:intl/intl.dart';
 import 'home.dart';
 import 'drawer.dart';
+import 'src/widgets.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -38,9 +39,16 @@ class _DetailPageState extends State<DetailPage> {
     final Argument oneContents =
         ModalRoute.of(context)!.settings.arguments as Argument;
     final currentUser = FirebaseAuth.instance;
+    final CollectionReference rep = FirebaseFirestore.instance
+        .collection('guestbook')
+        .doc(oneContents.id)
+        .collection('reply');
     final CollectionReference likeCol =
         FirebaseFirestore.instance.collection(oneContents.id);
     int likes = oneContents.likes;
+
+    final formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+    final controller = TextEditingController();
 
     Future addlikes() async {
       CollectionReference newDoc =
@@ -50,9 +58,25 @@ class _DetailPageState extends State<DetailPage> {
       await FirebaseFirestore.instance
           .collection('guestbook')
           .doc(_id)
-          .update(<String, dynamic>{
-        'likes': likes+1
-      });
+          .update(<String, dynamic>{'likes': likes + 1});
+    }
+
+    Future addReplAnoy(String? repl) async {
+      final json = {
+        'reply': repl,
+        'name': 'anoy',
+        'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
+      };
+      await rep.add(json);
+    }
+
+    Future addRepl(String? repl) async {
+      final json = {
+        'reply': repl,
+        'name':currentUser.currentUser?.displayName,
+        'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
+      };
+      await rep.add(json);
     }
 
     Future deletelikes() async {
@@ -62,9 +86,7 @@ class _DetailPageState extends State<DetailPage> {
       await FirebaseFirestore.instance
           .collection('guestbook')
           .doc(_id)
-          .update(<String, dynamic>{
-        'likes': likes
-      });
+          .update(<String, dynamic>{'likes': likes});
     }
 
     setState(() {
@@ -98,32 +120,7 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ),
           ),
-
           iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
-          // actions: <Widget>[
-          //   Align(
-          //     alignment : Alignment.center,
-          //     child: ElevatedButton(
-          //       style: ElevatedButton.styleFrom(
-          //         elevation: 0,
-          //         backgroundColor: const Color(0xFFef9a9a),
-          //         shape:
-          //         RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(18.0),
-          //         ),
-          //       ),
-          //       // onPressed: () {
-          //       onPressed: () {
-          //         print("temp..");
-          //       },
-          //       child: const Text(
-          //           "Save",
-          //           style: TextStyle(color: Colors.white)
-          //       ),
-          //     ),
-          //   )
-          //
-          // ],
         ),
         // drawer: DrawerCustom(),
         body: StreamBuilder(
@@ -160,7 +157,6 @@ class _DetailPageState extends State<DetailPage> {
                           ],
                         ),
                       ),
-
                       if (_userId == user_id)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
@@ -190,11 +186,6 @@ class _DetailPageState extends State<DetailPage> {
                               // const SizedBox(width: 0),
                               TextButton(
                                 onPressed: () {
-                                  CollectionReference guestbook =
-                                      FirebaseFirestore.instance
-                                          .collection('guestbook');
-
-                                  guestbook.doc(_id).delete();
                                   flutterDialog(context);
                                   // Navigator.pop(context);
                                 },
@@ -208,19 +199,6 @@ class _DetailPageState extends State<DetailPage> {
                             ],
                           ),
                         ),
-
-                      // const Padding(
-                      //   padding: EdgeInsets.fromLTRB(30, 0, 0, 20),
-                      //   child:
-                      //   Text(
-                      //     '여행에 대한 기록을 자유롭게 기록하세요 !',
-                      //     style: TextStyle(
-                      //         color: Colors.black26,
-                      //         fontSize: 15,
-                      //         fontWeight: FontWeight.bold
-                      //     ),
-                      //   ),
-                      // ),
 
                       Container(
                         // height: 500,
@@ -249,8 +227,8 @@ class _DetailPageState extends State<DetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.favorite),
-                                      color: Color(0xFFffcdd2),
+                                      icon: _likes == likes ? const Icon(Icons.favorite_border) : const Icon(Icons.favorite),
+                                      color: const Color(0xFFffcdd2),
                                       onPressed: () {
                                         if (_likes == likes) {
                                           addlikes();
@@ -267,7 +245,6 @@ class _DetailPageState extends State<DetailPage> {
                                         _likes.toString()),
                                   ]),
                             ),
-
 
                             Padding(
                               padding: const EdgeInsets.fromLTRB(35, 0, 30, 25),
@@ -288,7 +265,6 @@ class _DetailPageState extends State<DetailPage> {
                               color: Color(0xFFffcdd2),
                             ),
                             const SizedBox(height: 15),
-
                             Padding(
                               padding:
                                   const EdgeInsets.fromLTRB(220, 0, 10, 10),
@@ -313,7 +289,6 @@ class _DetailPageState extends State<DetailPage> {
                                 ],
                               ),
                             ),
-
                             Container(
                               margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
                               child: SizedBox(
@@ -321,7 +296,6 @@ class _DetailPageState extends State<DetailPage> {
                                 child: Image.network(_image!),
                               ),
                             ),
-
                             Container(
                               margin: const EdgeInsets.fromLTRB(25, 10, 25, 10),
                               child: Text(
@@ -329,52 +303,86 @@ class _DetailPageState extends State<DetailPage> {
                                       fontSize: 23.0, color: Colors.black54),
                                   _content!),
                             ),
-
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     ElevatedButton(
-                            //       onPressed: () {
-                            //       },
-                            //       style: ElevatedButton.styleFrom(
-                            //         elevation: 0,
-                            //         backgroundColor: const Color(0xFFef9a9a),
-                            //         shape:
-                            //         RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.circular(18.0),
-                            //         ),
-                            //       ),
-                            //       child: const Text("카메라"),
-                            //     ),
-                            //     const SizedBox(width: 30),
-                            //     ElevatedButton(
-                            //       onPressed: () {
-                            //         // await imgFromGallery();
-                            //       },
-                            //       style: ElevatedButton.styleFrom(
-                            //         elevation: 0,
-                            //         backgroundColor: const Color(0xFFef9a9a),
-                            //         shape:
-                            //         RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.circular(18.0),
-                            //         ),
-                            //       ),
-                            //       child: const Text("갤러리"),
-                            //     ),
-                            //   ],
-                            // ),
-
                             const SizedBox(height: 10),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 30),
-                    ]
-                // ),
-              );
-            }) /**/
-        );
+                      StreamBuilder(
+                          stream: rep.orderBy('timestamp').snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot> snapshot2) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Form(
+                                    key: formKey,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: controller,
+                                            decoration: const InputDecoration(
+                                              hintText: 'Leave a comment',
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Enter your comment to continue';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        StyledButton(
+                                          onPressed: () async {
+                                            if (formKey.currentState!
+                                                .validate()) {
+                                              if(currentUser.currentUser?.displayName==null)
+                                                await addReplAnoy(controller.text);
+                                              else
+                                                await addRepl(controller.text);
+                                              controller.clear();
+                                            }
+                                          },
+                                          child: Row(
+                                            children: const [
+                                              Text(
+                                                'SEND',
+                                                style: TextStyle(
+                                                    color: Color(0xFFef9a9a)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                snapshot2.hasData
+                                    ? ListView.builder(
+                                  shrinkWrap: true,
+                                        itemCount: snapshot2.data!.docs.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final DocumentSnapshot
+                                              documentSnapshot =
+                                              snapshot2.data!.docs[index];
+                                          return ListTile(
+                                            title: Paragraph('${documentSnapshot['name']}: ${documentSnapshot['reply']}'),
+                                              subtitle: Paragraph('${documentSnapshot['timestamp']}'),
+                                          );
+                                        })
+                                    : const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                              ],
+                            );
+                          })
+                    ]);
+            }));
   }
 
   void flutterDialog(BuildContext context) {
@@ -414,6 +422,10 @@ class _DetailPageState extends State<DetailPage> {
                       color: Colors.black87, fontSize: 20), // Color(0xFFe57373)
                 ),
                 onPressed: () {
+                  CollectionReference guestbook =
+                      FirebaseFirestore.instance.collection('guestbook');
+
+                  guestbook.doc(_id).delete();
                   Navigator.pushNamed(context, '/home');
                   // Navigator.pop(context);
                 },
