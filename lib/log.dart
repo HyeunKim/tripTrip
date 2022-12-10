@@ -24,8 +24,8 @@ class _LogPageState extends State<LogPage>{
   }
 
   final currentUser = FirebaseAuth.instance;
-  final CollectionReference _guestbook =
-  FirebaseFirestore.instance.collection('guestbook');
+  final CollectionReference _log =
+  FirebaseFirestore.instance.collection('log');
 
   var imageUrlList = [
     "https://i.natgeofe.com/n/93231b5d-3b4f-4bd6-bcf4-4172ebda2011/parliment-square-london-england_2x3.jpg",
@@ -125,7 +125,7 @@ class _LogPageState extends State<LogPage>{
           ),
         ),
         body:StreamBuilder(
-          stream: _guestbook.orderBy('timestamp').snapshots(),
+          stream: _log.orderBy('timestamp').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasData) {
               return
@@ -309,8 +309,8 @@ class BackgrounBlurView extends StatelessWidget {
     ]);
   }
 }
-class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
+class logMessage {
+  logMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
   final String id;
   final int likes;
   final String name;

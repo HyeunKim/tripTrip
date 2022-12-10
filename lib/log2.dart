@@ -3,16 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
 
-class GuestBook2 extends StatefulWidget {
-  const GuestBook2({super.key, required this.addMessage});
+class log2 extends StatefulWidget {
+  const log2({super.key, required this.addMessage});
   final FutureOr<void> Function(String message, String title) addMessage;
 
   @override
-  _GuestBookState2 createState() => _GuestBookState2();
+  _logState2 createState() => _logState2();
 }
 
-class _GuestBookState2 extends State<GuestBook2> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+class _logState2 extends State<log2> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_logState2');
   final _controller_title = TextEditingController();
   final _controller = TextEditingController();
 

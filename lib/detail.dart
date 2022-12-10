@@ -43,14 +43,14 @@ class _DetailPageState extends State<DetailPage> {
         ModalRoute.of(context)!.settings.arguments as Argument;
     final currentUser = FirebaseAuth.instance;
     final CollectionReference rep = FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .doc(oneContents.id)
         .collection('reply');
     final CollectionReference likeCol =
         FirebaseFirestore.instance.collection(oneContents.id);
     int likes = oneContents.likes;
 
-    final formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+    final formKey = GlobalKey<FormState>(debugLabel: '_logState');
     final controller = TextEditingController();
 
     Future addlikes() async {
@@ -59,7 +59,7 @@ class _DetailPageState extends State<DetailPage> {
       final json = {'like': true};
       await newDoc.doc(currentUser.currentUser!.uid).set(json);
       await FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .doc(_id)
           .update(<String, dynamic>{'likes': likes + 1});
     }
@@ -89,7 +89,7 @@ class _DetailPageState extends State<DetailPage> {
           FirebaseFirestore.instance.collection(oneContents.id);
       await newDoc.doc(currentUser.currentUser!.uid).delete();
       await FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .doc(_id)
           .update(<String, dynamic>{'likes': likes});
     }
@@ -526,10 +526,10 @@ class _DetailPageState extends State<DetailPage> {
                       color: Colors.black87, fontSize: 20), // Color(0xFFe57373)
                 ),
                 onPressed: () {
-                  CollectionReference guestbook =
-                      FirebaseFirestore.instance.collection('guestbook');
+                  CollectionReference log =
+                      FirebaseFirestore.instance.collection('log');
 
-                  guestbook.doc(_id).delete();
+                  log.doc(_id).delete();
                   Navigator.pushNamed(context, '/home');
                   // Navigator.pop(context);
                 },

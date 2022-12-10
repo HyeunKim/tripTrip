@@ -80,10 +80,10 @@ class AddPage extends StatelessWidget {
                   //   onSelection: (attending) => appState.attending = attending,
                   // ),
                   const Header('Discussion'),
-                  GuestBook(
+                  log(
                     addMessage: (message) =>
-                        appState.addMessageToGuestBook(message),
-                    messages: appState.guestBookMessages,
+                        appState.addMessageTolog(message),
+                    messages: appState.logMessages,
                   ),
                 ],
               ],
@@ -125,9 +125,9 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  StreamSubscription<QuerySnapshot>? _guestBookSubscription;
-  List<GuestBookMessage> _guestBookMessages = [];
-  List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
+  StreamSubscription<QuerySnapshot>? _logSubscription;
+  List<logMessage> _logMessages = [];
+  List<logMessage> get logMessages => _logMessages;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -150,15 +150,15 @@ class ApplicationState extends ChangeNotifier {
       print(user);
       if (user != null) {
         _loggedIn = true;
-        _guestBookSubscription = FirebaseFirestore.instance
-            .collection('guestbook')
+        _logSubscription = FirebaseFirestore.instance
+            .collection('log')
             .orderBy('timestamp', descending: true)
             .snapshots()
             .listen((snapshot) {
-          _guestBookMessages = [];
+          _logMessages = [];
           for (final document in snapshot.docs) {
-            _guestBookMessages.add(
-              GuestBookMessage(
+            _logMessages.add(
+              logMessage(
                 id: document.id,
                 name: document.data()['name'] as String,
                 message: document.data()['text'] as String,
@@ -188,20 +188,20 @@ class ApplicationState extends ChangeNotifier {
         });
       } else {
         _loggedIn = false;
-        _guestBookMessages = [];
-        _guestBookSubscription?.cancel();
+        _logMessages = [];
+        _logSubscription?.cancel();
       }
       notifyListeners();
     });
   }
 
-  Future<DocumentReference> addMessageToGuestBook(String message) {
+  Future<DocumentReference> addMessageTolog(String message) {
     if (!_loggedIn) {
       throw Exception('Must be logged in');
     }
 
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .add(<String, dynamic>{
       'text': message,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -211,8 +211,8 @@ class ApplicationState extends ChangeNotifier {
   }
 }
 
-class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.message, required this.timestamp, required this.userId});
+class logMessage {
+  logMessage({required this.id, required this.name, required this.message, required this.timestamp, required this.userId});
   final String id;
   final String name;
   final String message;
@@ -222,17 +222,17 @@ class GuestBookMessage {
 
 enum Attending { yes, no, unknown }
 
-class GuestBook extends StatefulWidget {
-  const GuestBook({super.key, required this.addMessage, required this.messages,});
+class log extends StatefulWidget {
+  const log({super.key, required this.addMessage, required this.messages,});
   final FutureOr<void> Function(String message) addMessage;
-  final List<GuestBookMessage> messages; // new
+  final List<logMessage> messages; // new
 
   @override
-  _GuestBookState createState() => _GuestBookState();
+  _logState createState() => _logState();
 }
 
-class _GuestBookState extends State<GuestBook> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+class _logState extends State<log> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_logState');
   final _controller = TextEditingController();
 
   final user_id = FirebaseAuth.instance.currentUser?.uid;
@@ -302,9 +302,9 @@ class _GuestBookState extends State<GuestBook> {
               if(message.userId == user_id)
                 IconButton(
                     onPressed: (){
-                      CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
+                      CollectionReference log = FirebaseFirestore.instance.collection('log');
 
-                      guestbook
+                      log
                           .doc(message.id)
                           .delete();
                     },
