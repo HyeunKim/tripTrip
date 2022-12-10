@@ -42,11 +42,9 @@ class _MyPageState extends State<MyPage> {
           actions: [
             IconButton(
               icon: Icon(Icons.logout),
-              onPressed: (){
+              onPressed: () {
                 FirebaseAuth.instance.signOut();
-                if(currentUser.currentUser==null){
-                  Navigator.popUntil(context, ModalRoute.withName('/sign-in'));
-                }
+                Navigator.popUntil(context, ModalRoute.withName('/sign-in'));
               },
             )
           ],
@@ -102,13 +100,13 @@ class _MyPageState extends State<MyPage> {
                             },
                             child: Icon(Icons.arrow_forward_ios)))),
                 StreamBuilder(
-                  stream: album.snapshots(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: null,
-                    );
-                  }),
+                    stream: album.snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: null,
+                      );
+                    }),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: ListTile(
