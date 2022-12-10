@@ -53,6 +53,8 @@ dependencies:
   outline_search_bar: ^2.3.0
   flutter_quill: ^6.1.6
   url_launcher: ^6.1.7
+  search_page: ^2.2.0
+  dropdown_search: ^5.0.5
 #  photo_view: ^0.11.1
 #  gallery_view: ^1.0.0+1
 #  galleryimage: ^1.2.0

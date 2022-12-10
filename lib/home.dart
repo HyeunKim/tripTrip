@@ -7,9 +7,21 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_3d/gallery3d.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
+import 'package:search_page/search_page.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import 'src/widgets.dart';
 import 'drawer.dart';
+
+class Person implements Comparable<Person> {
+  final String name, surname;
+  final num age;
+
+  const Person(this.name, this.surname, this.age);
+
+  @override
+  int compareTo(Person other) => name.compareTo(other.name);
+}
 
 class HomePage extends StatefulWidget{
   const HomePage({Key? key}) : super(key:key);
@@ -76,6 +88,16 @@ class _HomePageState extends State<HomePage>{
         });
   }
 
+  static const people = [
+    Person('Mike', 'Barron', 64),
+    Person('Todd', 'Black', 30),
+    Person('Ahmad', 'Edwards', 55),
+    Person('Anthony', 'Johnson', 67),
+    Person('Annette', 'Brooks', 39),
+  ];
+
+  var isDropdown = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,9 +163,64 @@ class _HomePageState extends State<HomePage>{
                     onTap: (){
                       // hideSearchButton.
                       print("검색어 버튼 클릭");
+                      isDropdown = true;
+
+                      // showSearch(
+                      //   context: context,
+                      //   delegate: SearchPage(
+                      //     barTheme: ThemeData(
+                      //         backgroundColor: Colors.white,
+                      //         primaryColor: Colors.red,
+                      //     ),
+                      //     onQueryUpdate: print,
+                      //     items: people,
+                      //     searchLabel: 'Search people',
+                      //     suggestion: const Center(
+                      //       child: Text('Filter people by name, surname or age'),
+                      //     ),
+                      //     failure: const Center(
+                      //       child: Text('No person found :('),
+                      //     ),
+                      //     filter: (person) => [
+                      //       person.name,
+                      //       person.surname,
+                      //       person.age.toString(),
+                      //     ],
+                      //     sort: (a, b) => a.compareTo(b),
+                      //     builder: (person) => ListTile(
+                      //       title: Text(person.name),
+                      //       subtitle: Text(person.surname),
+                      //       trailing: Text('${person.age} yo'),
+                      //     ),
+                      //   ),
+                      // );
+
                     }
 
                 ),
+
+                isDropdown ?
+                  DropdownSearch<String>(
+                    popupProps: PopupProps.menu(
+                      // showSelectedItems: true,
+                      // disabledItemFn: (String s) => s.startsWith('I'),
+                    ),
+                    items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        // labelText: "Menu mode",
+                        // hintText: "country in menu mode",
+                          counterStyle: TextStyle(
+                              color: Colors.red,
+                          ),
+                      ),
+                    ),
+                    onChanged: print,
+                  // selectedItem: "Brazil",
+                  ) : Container(),
+
+
+
 
                 Stack(
                   children: [
