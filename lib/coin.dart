@@ -15,10 +15,10 @@ class CoinPage extends StatefulWidget{
   const CoinPage({Key? key}) : super(key:key);
 
   @override
-  _CoinPagenState createState() => _CoinPagenState();
+  _CoinPageState createState() => _CoinPageState();
 }
 
-class _CoinPagenState extends State<CoinPage>{
+class _CoinPageState extends State<CoinPage>{
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
@@ -125,14 +125,18 @@ class _CoinPagenState extends State<CoinPage>{
         elevation: 0.1,
         backgroundColor: Colors.white70,
         centerTitle: true,
-        title: const Text(
-          'tripTrip',
-          style: TextStyle(
-            fontFamily: 'Quicksand',
-            color: Color(0xFFf8bbd0),
-            fontSize: 30,
+        title: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/home');
+          },
+          child: const Text(
+            'tripTrip',
+            style: TextStyle(
+              fontFamily: 'Quicksand',
+              color: Color(0xFFf8bbd0),
+              fontSize: 30,
+            ),
           ),
-
         ),
 
         iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
@@ -222,6 +226,7 @@ class _CoinPagenState extends State<CoinPage>{
               ),
 
               Container(
+                // opacity:
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                 decoration: BoxDecoration(
                   border: Border.all(

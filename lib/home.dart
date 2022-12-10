@@ -1,15 +1,36 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gallery_3d/gallery3d.dart';
+import 'package:outline_search_bar/outline_search_bar.dart';
+import 'package:search_page/search_page.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import 'src/widgets.dart';
 import 'drawer.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class Person implements Comparable<Person> {
+  final String name, surname;
+  final num age;
+
+  const Person(this.name, this.surname, this.age);
+
+  @override
+  int compareTo(Person other) => name.compareTo(other.name);
+}
+
+class HomePage extends StatefulWidget{
+  const HomePage({Key? key}) : super(key:key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
 
   Future _signOut()  async{
     await FirebaseAuth.instance.signOut();
@@ -19,6 +40,64 @@ class HomePage extends StatelessWidget {
   final CollectionReference _guestbook =
   FirebaseFirestore.instance.collection('guestbook');
 
+  var imageUrlList = [
+    "https://i.natgeofe.com/n/93231b5d-3b4f-4bd6-bcf4-4172ebda2011/parliment-square-london-england_2x3.jpg",
+    "https://www.tourw.co.kr/data/tour/1521247178_1.jpg",
+    "https://images.squarespace-cdn.com/content/v1/586ebc34d482e9c69268b69a/1624386887478-9Z3XA27D8WFVDWKW00QS/20201230173806551_JRT8E1VC.png",
+    "https://a.cdn-hotels.com/gdcs/production68/d1303/c8fa75d8-6932-459b-9660-8340f097ebd7.jpg",
+    "https://www.hanbit.co.kr/data/editor/20191017121027_wgbsqeit.png",
+    "https://a.cdn-hotels.com/gdcs/production48/d1804/5274c100-5336-4f8b-9d7a-c1f4fb30d1a1.jpg",
+  ];
+
+  int currentIndex = 0;
+
+  Widget buildGallery3D() {
+    return Gallery3D(
+        itemCount: imageUrlList.length,
+        width: MediaQuery.of(context).size.width,
+        height: 220,
+        isClip: false,
+
+        // ellipseHeight: 80,
+        itemConfig: const GalleryItemConfig(
+          width: 220,
+          height: 300,
+          radius: 10,
+          isShowTransformMask: false,
+          // shadows: [
+          //   BoxShadow(
+          //       color: Color(0x90000000), offset: Offset(2, 0), blurRadius: 5)
+          // ]
+        ),
+        currentIndex: currentIndex,
+        onItemChanged: (index) {
+          setState(() {
+            this.currentIndex = index;
+          });
+        },
+        onClickItem: (index) {
+          if(index == 0)
+            Navigator.pushNamed(context, '/notice');
+          print("currentIndex:$index");
+          },
+        itemBuilder: (context, index) {
+          return Image.network(
+            imageUrlList[index],
+            fit: BoxFit.fill,
+          );
+        });
+  }
+
+  static const people = [
+    Person('Mike', 'Barron', 64),
+    Person('Todd', 'Black', 30),
+    Person('Ahmad', 'Edwards', 55),
+    Person('Anthony', 'Johnson', 67),
+    Person('Annette', 'Brooks', 39),
+  ];
+
+  var isDropdown = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,14 +105,18 @@ class HomePage extends StatelessWidget {
         elevation: 0.1,
         backgroundColor: Colors.white70,
         centerTitle: true,
-        title: const Text(
-          'tripTrip',
-          style: TextStyle(
-            fontFamily: 'Quicksand',
-            color: Color(0xFFf8bbd0),
-            fontSize: 30,
+        title: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/home');
+          },
+          child: const Text(
+            'tripTrip',
+            style: TextStyle(
+              fontFamily: 'Quicksand',
+              color: Color(0xFFf8bbd0),
+              fontSize: 30,
+            ),
           ),
-
         ),
         actions: <Widget>[
           IconButton(
@@ -68,119 +151,258 @@ class HomePage extends StatelessWidget {
         stream: _guestbook.orderBy('timestamp').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            return GridView.builder(
-              itemCount: snapshot.data!.docs.length,
-              gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 3 / 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16),
-              itemBuilder: (BuildContext context, int index) {
-                final DocumentSnapshot documentSnapshot =
-                snapshot.data!.docs[index];
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
+            return
+              ListView(
+              children: [
+                OutlineSearchBar(
+                    borderColor: Color(0xFFffcdd2),
+                    cursorColor: Color(0xFFffcdd2),
+                    searchButtonIconColor: Color(0xFFffcdd2),
+                  borderWidth: 2,
+                    hintText: "검색어를 입력하세요.",
                     onTap: (){
-                      Navigator.pushNamed(
-                          context,
-                          '/detail',
-                          arguments: Argument(
-                              documentSnapshot.id,
-                              documentSnapshot['likes'],
-                              documentSnapshot['name'],
-                              documentSnapshot['title'],
-                              documentSnapshot['img_url'],
-                              documentSnapshot['text'],
-                              // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
-                              DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
-                              documentSnapshot['userId']
-                          )
-                      );
-                    },
-                    child: Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
-                  )
-                  /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
-                      ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                      :*/
+                      // hideSearchButton.
+                      print("검색어 버튼 클릭");
+                      isDropdown = true;
 
-                  /*Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AspectRatio(
-                        aspectRatio: 10 / 5,
-                        child:
-                        documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
-                            ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                            :
-                        Image.network(documentSnapshot['img_url'],fit: BoxFit.fitWidth),
+                      // showSearch(
+                      //   context: context,
+                      //   delegate: SearchPage(
+                      //     barTheme: ThemeData(
+                      //         backgroundColor: Colors.white,
+                      //         primaryColor: Colors.red,
+                      //     ),
+                      //     onQueryUpdate: print,
+                      //     items: people,
+                      //     searchLabel: 'Search people',
+                      //     suggestion: const Center(
+                      //       child: Text('Filter people by name, surname or age'),
+                      //     ),
+                      //     failure: const Center(
+                      //       child: Text('No person found :('),
+                      //     ),
+                      //     filter: (person) => [
+                      //       person.name,
+                      //       person.surname,
+                      //       person.age.toString(),
+                      //     ],
+                      //     sort: (a, b) => a.compareTo(b),
+                      //     builder: (person) => ListTile(
+                      //       title: Text(person.name),
+                      //       subtitle: Text(person.surname),
+                      //       trailing: Text('${person.age} yo'),
+                      //     ),
+                      //   ),
+                      // );
+
+                    }
+
+                ),
+
+                isDropdown ?
+                  DropdownSearch<String>(
+                    popupProps: PopupProps.menu(
+                      // showSelectedItems: true,
+                      // disabledItemFn: (String s) => s.startsWith('I'),
+                    ),
+                    items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        // labelText: "Menu mode",
+                        // hintText: "country in menu mode",
+                          counterStyle: TextStyle(
+                              color: Colors.red,
+                          ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              16.0, 12.0, 16.0, 0.0),
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Text(documentSnapshot['name']),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 25,
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.end,
-                                  children: [
-                                    TextButton(
-                                      style: const ButtonStyle(
-                                        alignment:
-                                        Alignment.topRight,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          '/detail',
-                                          arguments: Argument(
-                                              documentSnapshot.id,
-                                          documentSnapshot['likes'],
-                                            documentSnapshot['name'],
-                                            documentSnapshot['title'],
-                                            documentSnapshot['img_url'],
-                                            documentSnapshot['text'],
-                                            // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
-                                              DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
-                                              documentSnapshot['userId']
-                                          )
-                                        );
-                                      },
-                                      child: const Align(
-                                          alignment:
-                                          Alignment.topRight,
-                                          child: Text(
-                                            'more',
-                                            style: TextStyle(
-                                              fontSize: 10.0,
-                                            ),
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
+                    ),
+                    onChanged: print,
+                  // selectedItem: "Brazil",
+                  ) : Container(),
+
+
+
+
+                Stack(
+                  children: [
+                    Positioned(child: BackgrounBlurView(
+                      imageUrl: imageUrlList[currentIndex],
+                    ),
+                    top: -1,
+                    ),
+
+                    Container(
+                      padding: EdgeInsets.only(top: 40),
+                      child: buildGallery3D(),
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    ),
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 30, 20),
+                  child:
+                  Row(
+                    children: const [
+                      Text(
+                        'trip',
+                        style: TextStyle(
+                          // fontFamily: 'Quicksand',
+                          color: Color(0xFFffcdd2),
+                          fontSize: 30,
+                        ),
+                      ),
+                      Text(
+                        '로그',
+                        style: TextStyle(
+                          // fontFamily: 'Quicksand',
+                            color: Colors.black54,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+
+                    ],
+                  ),
+                ),
+
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(15, 0, 0, 20),
+                  child:
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "다른 사람들의 여행 로그들을 살펴보세요!",
+                          style: TextStyle(
+                              color: Colors.black26,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold
                           ),
                         ),
                       ),
-                    ],
-                  ),*/
-                );
-              },
+
+                ),
+
+                GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.docs.length,
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3 / 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16),
+                      itemBuilder: (BuildContext context, int index) {
+                        final DocumentSnapshot documentSnapshot =
+                        snapshot.data!.docs[index];
+                        return Card(
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                                onTap: (){
+                                  Navigator.pushNamed(
+                                      context,
+                                      '/detail',
+                                      arguments: Argument(
+                                          documentSnapshot.id,
+                                          documentSnapshot['likes'],
+                                          documentSnapshot['name'],
+                                          documentSnapshot['title'],
+                                          documentSnapshot['img_url'],
+                                          documentSnapshot['text'],
+                                          // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                                          DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
+                                          documentSnapshot['userId']
+                                      )
+                                  );
+                                },
+                                child: Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
+                            )
+                          /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                              ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                              :*/
+
+                          /*Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              AspectRatio(
+                                aspectRatio: 10 / 5,
+                                child:
+                                documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
+                                    ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
+                                    :
+                                Image.network(documentSnapshot['img_url'],fit: BoxFit.fitWidth),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      16.0, 12.0, 16.0, 0.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(documentSnapshot['name']),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 25,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              style: const ButtonStyle(
+                                                alignment:
+                                                Alignment.topRight,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  '/detail',
+                                                  arguments: Argument(
+                                                      documentSnapshot.id,
+                                                  documentSnapshot['likes'],
+                                                    documentSnapshot['name'],
+                                                    documentSnapshot['title'],
+                                                    documentSnapshot['img_url'],
+                                                    documentSnapshot['text'],
+                                                    // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
+                                                      DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
+                                                      documentSnapshot['userId']
+                                                  )
+                                                );
+                                              },
+                                              child: const Align(
+                                                  alignment:
+                                                  Alignment.topRight,
+                                                  child: Text(
+                                                    'more',
+                                                    style: TextStyle(
+                                                      fontSize: 10.0,
+                                                    ),
+                                                  )),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),*/
+                        );
+                      },
+                    ),
+
+                const SizedBox(height: 30),
+
+              ],
             );
+
           }
           return const Center(
             child: CircularProgressIndicator(),
@@ -212,6 +434,7 @@ class HomePage extends StatelessWidget {
                   Center(
                     child: TextButton(
                       onPressed: () {
+                        Navigator.pushNamed(context, '/album');
                         // Navigator.pushNamed(context, '/앨범사진추가하는 페이지');
                       },
                       style: TextButton.styleFrom(
@@ -247,6 +470,32 @@ class HomePage extends StatelessWidget {
           );
         },
         );
+  }
+}
+
+class BackgrounBlurView extends StatelessWidget {
+  final String imageUrl;
+  BackgrounBlurView({Key? key, required this.imageUrl}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      Container(
+        height: 200,
+        width: MediaQuery.of(context).size.width,
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+        ),
+      ),
+      BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(
+            color: Colors.black.withOpacity(0.1),
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+          ))
+    ]);
   }
 }
 

@@ -4,6 +4,7 @@ import 'add.dart';
 import 'email_loginPage.dart';
 import 'home.dart';
 import 'login.dart';
+import 'notice.dart';
 import 'profile.dart';
 import 'update.dart';
 import 'CloudStorageDemo.dart';
@@ -11,6 +12,9 @@ import 'detail.dart';
 import 'tempAdd.dart';
 import 'newAddPage.dart';
 import 'coin.dart';
+import 'album.dart';
+import 'album_inside.dart';
+import 'gallery_sample.dart';
 import 'myPage.dart';
 
 class App extends StatelessWidget {
@@ -19,6 +23,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/sign-in',
       routes: {
         '/home': (context) {
@@ -26,6 +31,15 @@ class App extends StatelessWidget {
         },
         '/sign-in': ((context) {
           return const LoginPage();
+        }),
+        '/album': ((context) {
+          return const AlbumPage();
+        }),
+        '/album-inside': ((context) {
+          return AlbumInsidePage();
+        }),
+        '/sample': ((context) {
+          return SamplePage();
         }),
         '/email_login': ((context) {
           return const EmailLoginPage();
@@ -41,6 +55,10 @@ class App extends StatelessWidget {
         '/detail': ((context) {
           // return ProfilePage(providers: [], actions: [],);
           return DetailPage();
+        }),
+        '/notice': ((context) {
+          // return ProfilePage(providers: [], actions: [],);
+          return NoticePage();
         }),
         '/coin': ((context) {
           // return ProfilePage(providers: [], actions: [],);

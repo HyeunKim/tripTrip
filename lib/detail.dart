@@ -107,25 +107,32 @@ class _DetailPageState extends State<DetailPage> {
           elevation: 0.1,
           backgroundColor: Colors.white70,
           centerTitle: true,
-          title: const Text(
-            'tripTrip',
-            style: TextStyle(
-              fontFamily: 'Quicksand',
-              color: Color(0xFFf8bbd0),
-              fontSize: 30,
+          title: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/home');
+            },
+            child: const Text(
+              'tripTrip',
+              style: TextStyle(
+                fontFamily: 'Quicksand',
+                color: Color(0xFFf8bbd0),
+                fontSize: 30,
+              ),
             ),
           ),
           iconTheme: const IconThemeData(color: Color(0xFFf8bbd0), size: 35),
         ),
-        drawer: DrawerCustom(),
+        // drawer: DrawerCustom(),
         body: StreamBuilder(
             stream: likeCol.snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) _likes = snapshot.data!.docs.length;
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              return
+                // SingleChildScrollView(
+                // scrollDirection: Axis.vertical,
+                // child:
+                ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 30, 20),
@@ -192,6 +199,7 @@ class _DetailPageState extends State<DetailPage> {
                             ],
                           ),
                         ),
+
                       Container(
                         // height: 500,
                         // margin: const EdgeInsets.all(10),
@@ -209,8 +217,8 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                         ),
 
-                        child: ListView(
-                          shrinkWrap: true,
+                        child: Column(
+                          // shrinkWrap: true,
                           children: <Widget>[
                             Padding(
                               padding:
@@ -237,12 +245,17 @@ class _DetailPageState extends State<DetailPage> {
                                         _likes.toString()),
                                   ]),
                             ),
+
                             Padding(
                               padding: const EdgeInsets.fromLTRB(35, 0, 30, 25),
-                              child: Text(
-                                  style: const TextStyle(
-                                      fontSize: 30.0, color: Color(0xFFef9a9a)),
-                                  _title!),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                    style: const TextStyle(
+                                        fontSize: 30.0, color: Color(0xFFef9a9a)),
+                                    _title!),
+                              ),
+
                             ),
                             const Divider(
                               height: 8,
@@ -294,6 +307,7 @@ class _DetailPageState extends State<DetailPage> {
                           ],
                         ),
                       ),
+
                       StreamBuilder(
                           stream: rep.orderBy('timestamp').snapshots(),
                           builder: (context,
@@ -367,8 +381,7 @@ class _DetailPageState extends State<DetailPage> {
                               ],
                             );
                           })
-                    ]),
-              );
+                    ]);
             }));
   }
 
