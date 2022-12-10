@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                                 "Guest",
                                 style: TextStyle(fontSize: 20)
                             ),
-                            onPressed: signInWithGoogle,
+                            onPressed: (){FirebaseAuth.instance.signInAnonymously();},
                             style: ElevatedButton.styleFrom(backgroundColor: const Color(0x4DD87B7B)),
                           ),
                         ],
