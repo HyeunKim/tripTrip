@@ -20,7 +20,7 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
   final currentUser = FirebaseAuth.instance;
   final CollectionReference album =
-      FirebaseFirestore.instance.collection('album_title');
+      FirebaseFirestore.instance.collection('album');
   final CollectionReference log =
       FirebaseFirestore.instance.collection('guestbook');
 
@@ -41,7 +41,7 @@ class _MyPageState extends State<MyPage> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 Navigator.popUntil(context, ModalRoute.withName('/sign-in'));
@@ -70,7 +70,7 @@ class _MyPageState extends State<MyPage> {
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   thickness: 1,
                   color: Color(0xffff8484),
                   indent: 5,
@@ -98,14 +98,33 @@ class _MyPageState extends State<MyPage> {
                             onTap: () {
                               //Navigator.pushNamed(context, '/album');
                             },
-                            child: Icon(Icons.arrow_forward_ios)))),
+                            child: const Icon(Icons.arrow_forward_ios)))),
                 StreamBuilder(
                     stream: album.snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: null,
-                      );
+                      if(snapshot.hasData){
+                        return Container(
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  for(int i=0; snapshot.data!.docs.length > i; i++)
+                                    Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: SizedBox(
+                                          width: 150,
+                                          height: 100,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                              child: Image.network(snapshot.data!.docs[i]['imgs'][1], fit: BoxFit.cover))
+                                    ))
+                                ],
+                              )
+                          )
+                        );}
+                      else {
+                        return const SizedBox(height: 100);
+                        }
                     }),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
