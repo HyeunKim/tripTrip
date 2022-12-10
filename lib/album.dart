@@ -434,19 +434,19 @@ class _AlbumPageState extends State<AlbumPage>{
                     ), // Color(0xFFe57373)
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/sample');
+                    // Navigator.pushNamed(context, '/sample');
                     //herehere
 
 
-                    // if (_formKey_2.currentState!.validate()) {
-                    //   print("앨범 저장하기");
-                    //   // appState.
-                    //   addNewAlbum(_controller.text);
-                    //   // makeLog(_controller.text, _controller.text);
-                    //   _controller.clear();
-                    // }
-                    // // Navigator.pushNamed(context, '/home');
-                    // Navigator.pop(context);
+                    if (_formKey_2.currentState!.validate()) {
+                      print("앨범 저장하기");
+                      // appState.
+                      addNewAlbum(_controller.text);
+                      // makeLog(_controller.text, _controller.text);
+                      _controller.clear();
+                    }
+                    // Navigator.pushNamed(context, '/home');
+                    Navigator.pop(context);
 
 
 
