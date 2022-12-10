@@ -22,7 +22,7 @@ class _MyPageState extends State<MyPage> {
   final CollectionReference album =
       FirebaseFirestore.instance.collection('album');
   final CollectionReference log =
-      FirebaseFirestore.instance.collection('guestbook');
+      FirebaseFirestore.instance.collection('log');
 
   @override
   Widget build(BuildContext context) {

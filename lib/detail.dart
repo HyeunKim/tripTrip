@@ -6,10 +6,13 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
+import 'package:flutter_randomcolor/flutter_randomcolor.dart';
 import 'package:intl/intl.dart';
 import 'home.dart';
 import 'drawer.dart';
 import 'src/widgets.dart';
+import 'package:hexcolor/hexcolor.dart';
+
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -40,14 +43,14 @@ class _DetailPageState extends State<DetailPage> {
         ModalRoute.of(context)!.settings.arguments as Argument;
     final currentUser = FirebaseAuth.instance;
     final CollectionReference rep = FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .doc(oneContents.id)
         .collection('reply');
     final CollectionReference likeCol =
         FirebaseFirestore.instance.collection(oneContents.id);
     int likes = oneContents.likes;
 
-    final formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+    final formKey = GlobalKey<FormState>(debugLabel: '_logState');
     final controller = TextEditingController();
 
     Future addlikes() async {
@@ -56,24 +59,26 @@ class _DetailPageState extends State<DetailPage> {
       final json = {'like': true};
       await newDoc.doc(currentUser.currentUser!.uid).set(json);
       await FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .doc(_id)
           .update(<String, dynamic>{'likes': likes + 1});
     }
 
-    Future addReplAnoy(String? repl) async {
+    Future addReplAnoy(String? repl, color) async {
       final json = {
         'reply': repl,
         'name': 'anoy',
+        'color': color,
         'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
       };
       await rep.add(json);
     }
 
-    Future addRepl(String? repl) async {
+    Future addRepl(String? repl, color) async {
       final json = {
         'reply': repl,
         'name':currentUser.currentUser?.displayName,
+        'color': color,
         'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
       };
       await rep.add(json);
@@ -84,7 +89,7 @@ class _DetailPageState extends State<DetailPage> {
           FirebaseFirestore.instance.collection(oneContents.id);
       await newDoc.doc(currentUser.currentUser!.uid).delete();
       await FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .doc(_id)
           .update(<String, dynamic>{'likes': likes});
     }
@@ -101,6 +106,10 @@ class _DetailPageState extends State<DetailPage> {
       _real_date = DateFormat('yyyy년 MM월 dd일').format(
           _date!); // DateFormat('yyyy년 MM월 dd일 HH:mm:ss').format(_date!);
     });
+
+    var options;
+    var color;
+    var _color;
 
     return Scaffold(
         appBar: AppBar(
@@ -315,16 +324,46 @@ class _DetailPageState extends State<DetailPage> {
                             return Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.fromLTRB(35, 30, 30,20),
                                   child: Form(
                                     key: formKey,
                                     child: Row(
                                       children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            print("Container was tapped");
+                                            options = Options(format: Format.hex, colorType: ColorType.green);
+                                            _color = RandomColor.getColor(options);
+                                            print("--");
+                                            setState(() {
+                                              color = _color;
+                                            });
+                                            print(color);
+                                          },
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              color: _color != null ?
+                                              HexColor(color): Color(0xFFffcdd2),
+                                                // color: Colors.red,
+                                                shape: BoxShape.circle
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 15),
                                         Expanded(
                                           child: TextFormField(
+                                            cursorColor: Color(0xFFffcdd2),
+                                            keyboardType: TextInputType.multiline,
+                                            maxLines: null,
+                                            style: const TextStyle(
+                                              // color: Color(0xFFffcdd2),
+                                              fontSize: 15,
+                                            ),
                                             controller: controller,
                                             decoration: const InputDecoration(
-                                              hintText: 'Leave a comment',
+                                              hintText: '댓글을 남겨보세요!',
                                             ),
                                             validator: (value) {
                                               if (value == null ||
@@ -341,9 +380,9 @@ class _DetailPageState extends State<DetailPage> {
                                             if (formKey.currentState!
                                                 .validate()) {
                                               if(currentUser.currentUser?.displayName==null)
-                                                await addReplAnoy(controller.text);
+                                                await addReplAnoy(controller.text, color);
                                               else
-                                                await addRepl(controller.text);
+                                                await addRepl(controller.text, color);
                                               controller.clear();
                                             }
                                           },
@@ -362,19 +401,84 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                 ),
                                 snapshot2.hasData
-                                    ? ListView.builder(
-                                  shrinkWrap: true,
-                                        itemCount: snapshot2.data!.docs.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          final DocumentSnapshot
-                                              documentSnapshot =
-                                              snapshot2.data!.docs[index];
-                                          return ListTile(
-                                            title: Paragraph('${documentSnapshot['name']}: ${documentSnapshot['reply']}'),
-                                              subtitle: Paragraph('${documentSnapshot['timestamp']}'),
-                                          );
-                                        })
+                                    ? Padding(
+                                  padding: const EdgeInsets.fromLTRB(25, 0, 25,20),
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: snapshot2.data!.docs.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final DocumentSnapshot
+                                        documentSnapshot =
+                                        snapshot2.data!.docs[index];
+                                        return Column(
+                                          children: [
+                                            ListTile(
+                                              tileColor: Color(0xFFffebee),
+                                              textColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(25)),
+                                              leading: GestureDetector(
+                                                onTap: () {
+                                                  print("Container was tapped");
+                                                  options = Options(format: Format.hex, colorType: ColorType.green);
+                                                  color = RandomColor.getColor(options);
+                                                  },
+                                                child: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      color: documentSnapshot['color'] != null?
+                                                      HexColor(documentSnapshot['color'])
+                                                      :Color(0xFFffcdd2),
+                                                      // color: Colors.red,
+                                                      shape: BoxShape.circle
+                                                  ),
+                                                ),
+                                              ),
+                                              // FlutterLogo(size: 72.0),
+                                              title: Row(
+                                                children: [
+                                                  Text(
+                                                    '${documentSnapshot['name']}',
+                                                    style: TextStyle(
+                                                      color: Color(0xFFef9a9a), // Color(0xFFffcdd2),
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  Text(
+                                                    '${documentSnapshot['timestamp']}',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF757575), // Color(0xFFffcdd2),
+                                                        fontSize: 8,
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              subtitle: Wrap(
+                                                children: [
+                                                  const SizedBox(width: 2),
+                                                  Text(
+                                                  '${documentSnapshot['reply']}',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF424242), // Color(0xFFffcdd2),
+                                                        fontSize: 15,
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 18),
+                                          ],
+                                        );
+
+                                      }),
+                                )
+
                                     : const Center(
                                         child: CircularProgressIndicator(),
                                       )
@@ -422,10 +526,10 @@ class _DetailPageState extends State<DetailPage> {
                       color: Colors.black87, fontSize: 20), // Color(0xFFe57373)
                 ),
                 onPressed: () {
-                  CollectionReference guestbook =
-                      FirebaseFirestore.instance.collection('guestbook');
+                  CollectionReference log =
+                      FirebaseFirestore.instance.collection('log');
 
-                  guestbook.doc(_id).delete();
+                  log.doc(_id).delete();
                   Navigator.pushNamed(context, '/home');
                   // Navigator.pop(context);
                 },

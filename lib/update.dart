@@ -38,13 +38,13 @@ class _UpdatePageState extends State<UpdatePage>{
   // String? _userId;
   // String? _name;
 
-  // final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+  // final _formKey = GlobalKey<FormState>(debugLabel: '_logState2');
   // // final _controller_title = TextEditingController(text: {_title});
   // final _controller = TextEditingController();
 
-  Future<void> updateMessageToGuestBookDefaultImage(String title, String message) {
+  Future<void> updateMessageTologDefaultImage(String title, String message) {
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .doc(_id)
         .update(<String, dynamic>{
       'text': message,
@@ -54,9 +54,9 @@ class _UpdatePageState extends State<UpdatePage>{
     });
   }
 
-  Future<void> updateMessageToGuestBookWithImage(String title, String message, String imgURL) {
+  Future<void> updateMessageTologWithImage(String title, String message, String imgURL) {
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .doc(_id)
         .update(<String, dynamic>{
       'title': title,
@@ -118,10 +118,10 @@ class _UpdatePageState extends State<UpdatePage>{
     setState(() => new_message = later_message);
 
     if (new_img == null){
-      updateMessageToGuestBookDefaultImage(new_title!, new_message!);
+      updateMessageTologDefaultImage(new_title!, new_message!);
     }
     else{
-      updateMessageToGuestBookWithImage(new_title!, new_message!, new_img!);
+      updateMessageTologWithImage(new_title!, new_message!, new_img!);
     }
   }
 
@@ -141,7 +141,7 @@ class _UpdatePageState extends State<UpdatePage>{
       // _real_date = DateFormat('yyyy년 MM월 dd일').format(_date!); // DateFormat('yyyy년 MM월 dd일 HH:mm:ss').format(_date!);
     });
 
-    final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+    final _formKey = GlobalKey<FormState>(debugLabel: '_logState2');
     final _controller_title = TextEditingController(text: _title);
     final _controller = TextEditingController(text: _content);
 
@@ -309,7 +309,7 @@ class _UpdatePageState extends State<UpdatePage>{
                       child:
                       SizedBox(
                         width: double.infinity,
-                        child: Image.network(new_img!),
+                        child: Image.network(_image!),
                       ),
                     ),
 

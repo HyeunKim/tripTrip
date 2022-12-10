@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage>{
   }
 
   final currentUser = FirebaseAuth.instance;
-  final CollectionReference _guestbook =
-  FirebaseFirestore.instance.collection('guestbook');
+  final CollectionReference _log =
+  FirebaseFirestore.instance.collection('log');
 
   var imageUrlList = [
     "https://i.natgeofe.com/n/93231b5d-3b4f-4bd6-bcf4-4172ebda2011/parliment-square-london-england_2x3.jpg",
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage>{
           ),
         ),
       body:StreamBuilder(
-        stream: _guestbook.orderBy('timestamp').snapshots(),
+        stream: _log.orderBy('timestamp').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             return
@@ -413,9 +413,9 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  StreamSubscription<QuerySnapshot>? _guestBookSubscription;
-  List<GuestBookMessage> _guestBookMessages = [];
-  List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
+  StreamSubscription<QuerySnapshot>? _logSubscription;
+  List<logMessage> _logMessages = [];
+  List<logMessage> get logMessages => _logMessages;
 
   Future<void> init() async {
     FirebaseUIAuth.configureProviders([
@@ -434,15 +434,15 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
-        _guestBookSubscription = FirebaseFirestore.instance
-            .collection('guestbook')
+        _logSubscription = FirebaseFirestore.instance
+            .collection('log')
             .orderBy('timestamp', descending: true)
             .snapshots()
             .listen((snapshot) {
-          _guestBookMessages = [];
+          _logMessages = [];
           for (final document in snapshot.docs) {
-            _guestBookMessages.add(
-              GuestBookMessage(
+            _logMessages.add(
+              logMessage(
                 id: document.id,
                 likes: document.data()['likes'] as int,
                 name: document.data()['name'] as String,
@@ -475,20 +475,20 @@ class ApplicationState extends ChangeNotifier {
         });
       } else {
         _loggedIn = false;
-        _guestBookMessages = [];
-        _guestBookSubscription?.cancel();
+        _logMessages = [];
+        _logSubscription?.cancel();
       }
       notifyListeners();
     });
   }
 
-  Future<DocumentReference> addMessageToGuestBook(String title, String message) {
+  Future<DocumentReference> addMessageTolog(String title, String message) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
 
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .add(<String, dynamic>{
       'text': message,
       'title': title,
@@ -500,13 +500,13 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+  Future<DocumentReference> addMessageTologWithImage(String title, String message, String imgURL) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
 
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .add(<String, dynamic>{
       'text': message,
       'title': title,
@@ -518,15 +518,15 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  Future<void> updateMessageToGuestBook(String newMessageId, int newMessageLikes, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
+  Future<void> updateMessageTolog(String newMessageId, int newMessageLikes, String newMessageName,  String newMessageTitle, String newMessageImgURL, String newMessageMessage, DateTime newMessageTime, String newMessageUserId) {
     if (!_loggedIn) {
       throw Exception('Must be logged in ');
     }
 
-    // var id = FirebaseFirestore.instance.collection('guestbook').doc(message).id;
+    // var id = FirebaseFirestore.instance.collection('log').doc(message).id;
 
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .doc(newMessageId)
         .update(<String, dynamic>{
       'text': newMessageMessage,
@@ -535,8 +535,8 @@ class ApplicationState extends ChangeNotifier {
   }
 }
 
-class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
+class logMessage {
+  logMessage({required this.id, required this.likes, required this.name, required this.title, required this.img_url, required this.message, required this.timestamp, required this.userId});
   final String id;
   final int likes;
   final String name;
@@ -549,16 +549,16 @@ class GuestBookMessage {
 
 enum Attending { yes, no, unknown }
 
-class GuestBook extends StatefulWidget {
-  const GuestBook({super.key, required this.messages,});
-  final List<GuestBookMessage> messages; // new
+class log extends StatefulWidget {
+  const log({super.key, required this.messages,});
+  final List<logMessage> messages; // new
 
   @override
-  _GuestBookState createState() => _GuestBookState();
+  _logState createState() => _logState();
 }
 
-class _GuestBookState extends State<GuestBook> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+class _logState extends State<log> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_logState');
   final _controller = TextEditingController();
 
   final user_id = FirebaseAuth.instance.currentUser?.uid;
@@ -602,9 +602,9 @@ class _GuestBookState extends State<GuestBook> {
                               message.userId
                           )
                           );
-                          // CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
+                          // CollectionReference log = FirebaseFirestore.instance.collection('log');
                           //
-                          // guestbook
+                          // log
                           //     .doc(message.id)
                           //     .update({
                           // 'text': message,
@@ -614,9 +614,9 @@ class _GuestBookState extends State<GuestBook> {
                     ),
                     IconButton(
                         onPressed: (){
-                          CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
+                          CollectionReference log = FirebaseFirestore.instance.collection('log');
 
-                          guestbook
+                          log
                               .doc(message.id)
                               .delete();
                         },
@@ -647,16 +647,16 @@ class Argument {
   Argument(this.id, this.likes, this.name, this.title, this.img_url, this.message, this.timestamp, this.userId);
 }
 
-class GuestBook3 extends StatefulWidget {
-  const GuestBook3({super.key, required this.updateMessage});
+class log3 extends StatefulWidget {
+  const log3({super.key, required this.updateMessage});
   final FutureOr<void> Function(String message) updateMessage;
 
   @override
-  _GuestBookState3 createState() => _GuestBookState3();
+  _logState3 createState() => _logState3();
 }
 
-class _GuestBookState3 extends State<GuestBook3> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState3');
+class _logState3 extends State<log3> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_logState3');
   final _controller = TextEditingController();
 
   final user_id = FirebaseAuth.instance.currentUser?.uid;

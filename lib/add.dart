@@ -32,20 +32,20 @@ class _AddPageState extends State<AddPage>{
     String? title;
     String? message;
 
-    final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+    final _formKey = GlobalKey<FormState>(debugLabel: '_logState2');
     final _controller_title = TextEditingController();
     final _controller = TextEditingController();
 
     final user_id = FirebaseAuth.instance.currentUser?.uid;
 
 
-    Future<DocumentReference> addMessageToGuestBook(String title, String message) {
+    Future<DocumentReference> addMessageTolog(String title, String message) {
       // if (!_loggedIn) {
       //   throw Exception('Must be logged in ');
       // }
 
       return FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .add(<String, dynamic>{
         'text': message,
         'title': title,
@@ -57,13 +57,13 @@ class _AddPageState extends State<AddPage>{
       });
     }
 
-    Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+    Future<DocumentReference> addMessageTologWithImage(String title, String message, String imgURL) {
       // if (!_loggedIn) {
       //   throw Exception('Must be logged in ');
       // }
 
       return FirebaseFirestore.instance
-          .collection('guestbook')
+          .collection('log')
           .add(<String, dynamic>{
         'text': message,
         'title': title,
@@ -147,10 +147,10 @@ class _AddPageState extends State<AddPage>{
       print(_image);
 
       // if (_image == null){
-      //   addMessageToGuestBook(title!, message!);
+      //   addMessageTolog(title!, message!);
       // }
       // else{
-      //   addMessageToGuestBookWithImage(title!, message!, _image!);
+      //   addMessageTologWithImage(title!, message!, _image!);
       // }
 
     }
@@ -162,10 +162,10 @@ class _AddPageState extends State<AddPage>{
       print(_image);
 
       if (_image == null){
-        addMessageToGuestBook(title!, message!);
+        addMessageTolog(title!, message!);
       }
       else{
-        addMessageToGuestBookWithImage(title!, message!, _image!);
+        addMessageTologWithImage(title!, message!, _image!);
       }
 
     }
@@ -209,17 +209,17 @@ class _AddPageState extends State<AddPage>{
                     _controller_title.clear();
                   }
                 // makeLog(title!, message!);
-                // GuestBook2(
+                // log2(
                 //   addMessage: (title, message) =>
-                //       addMessageToGuestBook(title, message),
+                //       addMessageTolog(title, message),
                 // )
-                // : GuestBook2(
+                // : log2(
                 // addMessage: (title, message) =>
-                // addMessageToGuestBookWithImage(title, message, _image!),
+                // addMessageTologWithImage(title, message, _image!),
                 // ),
                 // _image==null
-                //     ? addMessageToGuestBook(title!, message!)
-                //     : addMessageToGuestBookWithImage(title!, message!, _image!);
+                //     ? addMessageTolog(title!, message!)
+                //     : addMessageTologWithImage(title!, message!, _image!);
                 // Navigator.pop(context);
               },
               child: const Text(
@@ -703,13 +703,13 @@ class _AddPageState extends State<AddPage>{
                         ),
 
                           // _image==null
-                          // ? GuestBook2(
+                          // ? log2(
                           //     addMessage: (title, message) =>
                           //       makeLog(title, message),
                           //   )
-                          // : GuestBook2(
+                          // : log2(
                           //     addMessage: (title, message) =>
-                          //         addMessageToGuestBookWithImage(title, message, _image!),
+                          //         addMessageTologWithImage(title, message, _image!),
                           // ),
                         // ],
                       ],
@@ -731,13 +731,13 @@ class _AddPageState extends State<AddPage>{
                   //         //   onSelection: (attending) => appState.attending = attending,
                   //         // ),
                   //         _image==null
-                  //             ? GuestBook2(
+                  //             ? log2(
                   //           addMessage: (title, message) =>
-                  //               appState.addMessageToGuestBook(title, message),
+                  //               appState.addMessageTolog(title, message),
                   //         )
-                  //             : GuestBook2(
+                  //             : log2(
                   //           addMessage: (title, message) =>
-                  //               appState.addMessageToGuestBookWithImage(title, message, _image!),
+                  //               appState.addMessageTologWithImage(title, message, _image!),
                   //         ),
                   //       ],
                   //     ],

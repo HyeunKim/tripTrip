@@ -27,13 +27,13 @@ class _CoinPageState extends State<CoinPage>{
   String? _image;
   String? _netImage;
 
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState2');
+  final _formKey = GlobalKey<FormState>(debugLabel: '_logState2');
   final _controller_title = TextEditingController();
   final _controller = TextEditingController();
 
-  Future<DocumentReference> addMessageToGuestBookDefaultImage(String title, String message) {
+  Future<DocumentReference> addMessageTologDefaultImage(String title, String message) {
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .add(<String, dynamic>{
       'text': message,
       'title': title,
@@ -45,9 +45,9 @@ class _CoinPageState extends State<CoinPage>{
     });
   }
 
-  Future<DocumentReference> addMessageToGuestBookWithImage(String title, String message, String imgURL) {
+  Future<DocumentReference> addMessageTologWithImage(String title, String message, String imgURL) {
     return FirebaseFirestore.instance
-        .collection('guestbook')
+        .collection('log')
         .add(<String, dynamic>{
       'text': message,
       'title': title,
@@ -111,10 +111,10 @@ class _CoinPageState extends State<CoinPage>{
     setState(() => message = later_message);
 
     if (_image == null){
-      addMessageToGuestBookDefaultImage(title!, message!);
+      addMessageTologDefaultImage(title!, message!);
     }
     else{
-      addMessageToGuestBookWithImage(title!, message!, _netImage!);
+      addMessageTologWithImage(title!, message!, _netImage!);
     }
   }
 
