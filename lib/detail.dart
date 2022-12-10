@@ -64,10 +64,11 @@ class _DetailPageState extends State<DetailPage> {
           .update(<String, dynamic>{'likes': likes + 1});
     }
 
-    Future addReplAnoy(String? repl, color) async {
+    Future addReplanoy(String? repl, color) async {
       final json = {
         'reply': repl,
-        'name': 'anoy',
+        'name': '익명',
+        'uid' : user_id,
         'color': color,
         'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
       };
@@ -78,10 +79,17 @@ class _DetailPageState extends State<DetailPage> {
       final json = {
         'reply': repl,
         'name':currentUser.currentUser?.displayName,
+        'uid' : user_id,
         'color': color,
         'timestamp': DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toLocal())
       };
       await rep.add(json);
+    }
+
+    Future deleteRepl(String id) async {
+      CollectionReference newDoc =
+      FirebaseFirestore.instance.collection('log').doc(oneContents.id).collection('reply');
+      await newDoc.doc(id).delete();
     }
 
     Future deletelikes() async {
@@ -380,7 +388,7 @@ class _DetailPageState extends State<DetailPage> {
                                             if (formKey.currentState!
                                                 .validate()) {
                                               if(currentUser.currentUser?.displayName==null)
-                                                await addReplAnoy(controller.text, color);
+                                                await addReplanoy(controller.text, color);
                                               else
                                                 await addRepl(controller.text, color);
                                               controller.clear();
@@ -404,6 +412,7 @@ class _DetailPageState extends State<DetailPage> {
                                     ? Padding(
                                   padding: const EdgeInsets.fromLTRB(25, 0, 25,20),
                                   child: ListView.builder(
+                                      physics: const ScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: snapshot2.data!.docs.length,
                                       itemBuilder:
@@ -414,7 +423,7 @@ class _DetailPageState extends State<DetailPage> {
                                         return Column(
                                           children: [
                                             ListTile(
-                                              tileColor: Color(0xFFffebee),
+                                              tileColor: const Color(0xFFffebee),
                                               textColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(25)),
@@ -471,11 +480,17 @@ class _DetailPageState extends State<DetailPage> {
                                                   ),
                                                 ],
                                               ),
+                                              trailing: currentUser.currentUser?.uid == documentSnapshot['uid']
+                                                  ? IconButton(
+                                                icon: Icon(Icons.delete),
+                                                onPressed: (){
+                                                  deleteRepl(documentSnapshot.id);
+                                                },
+                                              ) : null
                                             ),
                                             const SizedBox(height: 18),
                                           ],
                                         );
-
                                       }),
                                 )
 

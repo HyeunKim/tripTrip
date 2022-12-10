@@ -40,7 +40,7 @@ class _CoinPageState extends State<CoinPage>{
       'likes':0,
       'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? '익명',
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
@@ -54,7 +54,7 @@ class _CoinPageState extends State<CoinPage>{
       'likes':0,
       'img_url':imgURL,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+      'name': FirebaseAuth.instance.currentUser!.displayName ?? '익명',
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
