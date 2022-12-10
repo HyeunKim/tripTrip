@@ -332,19 +332,19 @@ class _DetailPageState extends State<DetailPage> {
                                         GestureDetector(
                                           onTap: () {
                                             print("Container was tapped");
-                                            options = Options(format: Format.hex, colorType: ColorType.green);
-                                            _color = RandomColor.getColor(options);
+                                            options = Options(format: Format.hex, colorType: ColorType.random);
+                                            color = RandomColor.getColor(options);
                                             print("--");
-                                            setState(() {
-                                              color = _color;
-                                            });
+                                            // setState(() {
+                                            //   color = _color;
+                                            // });
                                             print(color);
                                           },
                                           child: Container(
                                             width: 40,
                                             height: 40,
                                             decoration: BoxDecoration(
-                                              color: _color != null ?
+                                              color: color != null ?
                                               HexColor(color): Color(0xFFffcdd2),
                                                 // color: Colors.red,
                                                 shape: BoxShape.circle
@@ -421,7 +421,7 @@ class _DetailPageState extends State<DetailPage> {
                                               leading: GestureDetector(
                                                 onTap: () {
                                                   print("Container was tapped");
-                                                  options = Options(format: Format.hex, colorType: ColorType.green);
+                                                  options = Options(format: Format.hex, colorType: ColorType.random);
                                                   color = RandomColor.getColor(options);
                                                   },
                                                 child: Container(
