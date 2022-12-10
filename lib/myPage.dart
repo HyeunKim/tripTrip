@@ -96,7 +96,7 @@ class _MyPageState extends State<MyPage> {
                             ])),
                         trailing: InkWell(
                             onTap: () {
-                              //Navigator.pushNamed(context, '/album');
+                              Navigator.pushNamed(context, '/album');
                             },
                             child: const Icon(Icons.arrow_forward_ios)))),
                 StreamBuilder(
@@ -109,7 +109,8 @@ class _MyPageState extends State<MyPage> {
                               child: Row(
                                 children: [
                                   for(int i=0; snapshot.data!.docs.length > i; i++)
-                                    Padding(
+                                    snapshot.data!.docs[i]['userId'] == currentUser.currentUser!.uid
+                                    ? Padding(
                                         padding: EdgeInsets.all(10),
                                         child: SizedBox(
                                           width: 150,
@@ -118,6 +119,7 @@ class _MyPageState extends State<MyPage> {
                                             borderRadius: BorderRadius.circular(8.0),
                                               child: Image.network(snapshot.data!.docs[i]['imgs'][1], fit: BoxFit.cover))
                                     ))
+                                        : SizedBox(height: 100)
                                 ],
                               )
                           )
@@ -146,7 +148,7 @@ class _MyPageState extends State<MyPage> {
                             ])),
                         trailing: InkWell(
                             onTap: () {
-                              //Navigator.pushNamed(context, '/album');
+                              Navigator.pushNamed(context, '/log');
                             },
                             child: Icon(Icons.arrow_forward_ios)))),
                 StreamBuilder(

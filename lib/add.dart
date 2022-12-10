@@ -52,7 +52,7 @@ class _AddPageState extends State<AddPage>{
         'likes':0,
         'img_url':'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg',
         'timestamp': DateTime.now().millisecondsSinceEpoch,
-        'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+        'name': FirebaseAuth.instance.currentUser!.displayName ?? '익명',
         'userId': FirebaseAuth.instance.currentUser!.uid,
       });
     }
@@ -70,7 +70,7 @@ class _AddPageState extends State<AddPage>{
         'likes':0,
         'img_url':imgURL,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
-        'name': FirebaseAuth.instance.currentUser!.displayName ?? 'anoy',
+        'name': FirebaseAuth.instance.currentUser!.displayName ?? '익명',
         'userId': FirebaseAuth.instance.currentUser!.uid,
       });
     }
@@ -714,35 +714,6 @@ class _AddPageState extends State<AddPage>{
                         // ],
                       ],
                     ),
-                  // ),
-                  // Consumer<ApplicationState>(
-                  //   builder: (context, appState, _) => Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       // if (appState.attendees >= 2)
-                  //       //   Paragraph('${appState.attendees} people going')
-                  //       // else if (appState.attendees == 1)
-                  //       //   const Paragraph('1 person going')
-                  //       // else
-                  //       //   const Paragraph('No one going'),
-                  //       if (appState.loggedIn) ...[
-                  //         // YesNoSelection(
-                  //         //   state: appState.attending,
-                  //         //   onSelection: (attending) => appState.attending = attending,
-                  //         // ),
-                  //         _image==null
-                  //             ? log2(
-                  //           addMessage: (title, message) =>
-                  //               appState.addMessageTolog(title, message),
-                  //         )
-                  //             : log2(
-                  //           addMessage: (title, message) =>
-                  //               appState.addMessageTologWithImage(title, message, _image!),
-                  //         ),
-                  //       ],
-                  //     ],
-                  //   ),
-                  // ),
 
                 ],
               ),

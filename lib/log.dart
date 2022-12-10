@@ -155,6 +155,13 @@ class _LogPageState extends State<LogPage>{
                         ],
                       ),
                     ),
+                    const Divider(
+                      height: 8,
+                      thickness: 2,
+                      indent: 15,
+                      endIndent: 15,
+                      color: Color(0xFFffcdd2),
+                    ),
 
                     const Padding(
                       padding: EdgeInsets.fromLTRB(15, 0, 0, 20),
