@@ -74,7 +74,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                           children: <TextSpan>[TextSpan(text: '로그', style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.w300))])
                       ),
                       onTap: (){
-                        Navigator.pushNamed(context, '/home');
+                        Navigator.pushNamed(context, '/log');
                       },
                     )
                 ),
