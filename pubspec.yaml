@@ -57,9 +57,15 @@ dependencies:
   dropdown_search: ^5.0.5
   flutter_randomcolor: ^1.0.14
   hexcolor: ^3.0.1
+  flutter_native_splash: ^2.2.16
+  video_player: ^2.4.9
+  flutter_gif: ^0.0.4
 #  photo_view: ^0.11.1
 #  gallery_view: ^1.0.0+1
 #  galleryimage: ^1.2.0
+
+flutter_native_splash:
+  background_image: assets/loading.png
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +91,8 @@ flutter:
   assets:
     - assets/codelab.png
     - assets/img.png
+    - assets/loading.png
+    - assets/login.gif
 
   # To add assets to your application, add an assets section, like this:
   # assets:
