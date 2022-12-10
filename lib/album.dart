@@ -139,12 +139,12 @@ class _AlbumPageState extends State<AlbumPage>{
                           color: Color(0xFFffcdd2),
                       ),
                       const Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 0, 20),
+                        padding: EdgeInsets.fromLTRB(25, 10, 0, 20),
                         child:
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "다른 사람들의 여행 로그들을 살펴보세요!",
+                            "다른 사람들의 여행 앨범들을 살펴보세요!",
                             style: TextStyle(
                                 color: Colors.black26,
                                 fontSize: 13,
