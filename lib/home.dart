@@ -164,39 +164,7 @@ class _HomePageState extends State<HomePage>{
                       // hideSearchButton.
                       print("검색어 버튼 클릭");
                       isDropdown = true;
-
-                      // showSearch(
-                      //   context: context,
-                      //   delegate: SearchPage(
-                      //     barTheme: ThemeData(
-                      //         backgroundColor: Colors.white,
-                      //         primaryColor: Colors.red,
-                      //     ),
-                      //     onQueryUpdate: print,
-                      //     items: people,
-                      //     searchLabel: 'Search people',
-                      //     suggestion: const Center(
-                      //       child: Text('Filter people by name, surname or age'),
-                      //     ),
-                      //     failure: const Center(
-                      //       child: Text('No person found :('),
-                      //     ),
-                      //     filter: (person) => [
-                      //       person.name,
-                      //       person.surname,
-                      //       person.age.toString(),
-                      //     ],
-                      //     sort: (a, b) => a.compareTo(b),
-                      //     builder: (person) => ListTile(
-                      //       title: Text(person.name),
-                      //       subtitle: Text(person.surname),
-                      //       trailing: Text('${person.age} yo'),
-                      //     ),
-                      //   ),
-                      // );
-
                     }
-
                 ),
 
                 isDropdown ?
@@ -218,9 +186,6 @@ class _HomePageState extends State<HomePage>{
                     onChanged: print,
                   // selectedItem: "Brazil",
                   ) : Container(),
-
-
-
 
                 Stack(
                   children: [
@@ -246,7 +211,6 @@ class _HomePageState extends State<HomePage>{
                       Text(
                         'trip',
                         style: TextStyle(
-                          // fontFamily: 'Quicksand',
                           color: Color(0xFFffcdd2),
                           fontSize: 30,
                         ),
@@ -260,8 +224,7 @@ class _HomePageState extends State<HomePage>{
                             fontWeight: FontWeight.bold
                         ),
                       ),
-                      const SizedBox(width: 10),
-
+                        SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -280,10 +243,10 @@ class _HomePageState extends State<HomePage>{
                           ),
                         ),
                       ),
-
                 ),
 
                 GridView.builder(
+                  physics: ScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: snapshot.data!.docs.length,
                       gridDelegate:
@@ -317,89 +280,10 @@ class _HomePageState extends State<HomePage>{
                                 },
                                 child: Image.network(documentSnapshot['img_url'],fit: BoxFit.cover)
                             )
-                          /*documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
-                              ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                              :*/
-
-                          /*Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              AspectRatio(
-                                aspectRatio: 10 / 5,
-                                child:
-                                documentSnapshot['img_url'] == 'https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg'
-                                    ? Image.network('https://ichef.bbci.co.uk/news/640/cpsprodpb/14C73/production/_121170158_planepoogettyimages-1135673520.jpg')
-                                    :
-                                Image.network(documentSnapshot['img_url'],fit: BoxFit.fitWidth),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      16.0, 12.0, 16.0, 0.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(documentSnapshot['name']),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 25,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.end,
-                                          children: [
-                                            TextButton(
-                                              style: const ButtonStyle(
-                                                alignment:
-                                                Alignment.topRight,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pushNamed(
-                                                  context,
-                                                  '/detail',
-                                                  arguments: Argument(
-                                                      documentSnapshot.id,
-                                                  documentSnapshot['likes'],
-                                                    documentSnapshot['name'],
-                                                    documentSnapshot['title'],
-                                                    documentSnapshot['img_url'],
-                                                    documentSnapshot['text'],
-                                                    // DateTime.parse(documentSnapshot['timestamp'].toString()) ,
-                                                      DateTime.fromMillisecondsSinceEpoch(documentSnapshot['timestamp']),
-                                                      documentSnapshot['userId']
-                                                  )
-                                                );
-                                              },
-                                              child: const Align(
-                                                  alignment:
-                                                  Alignment.topRight,
-                                                  child: Text(
-                                                    'more',
-                                                    style: TextStyle(
-                                                      fontSize: 10.0,
-                                                    ),
-                                                  )),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),*/
                         );
                       },
                     ),
-
                 const SizedBox(height: 30),
-
               ],
             );
 
@@ -423,7 +307,7 @@ class _HomePageState extends State<HomePage>{
           return SizedBox(
             width: 50,
             child: AlertDialog(
-                backgroundColor: Color(0xFFffebee),
+                backgroundColor: const Color(0xFFffebee),
               // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0)),
@@ -438,7 +322,7 @@ class _HomePageState extends State<HomePage>{
                         // Navigator.pushNamed(context, '/앨범사진추가하는 페이지');
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor:  Color(0xFFe57373),
+                        foregroundColor:  const Color(0xFFe57373),
                         textStyle: const TextStyle(fontSize: 20),
                       ),
                       child: const Text("앨범 사진 추가하기"),
@@ -647,42 +531,7 @@ class ApplicationState extends ChangeNotifier {
         .update(<String, dynamic>{
       'text': newMessageMessage,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      // 'name': newMessage_name,
-      // 'userId': newMessage_userId,
     });
-
-    // var id = FirebaseFirestore.instance.collection('guestbook').doc(message).id;
-    //
-    // // print(id);
-    //
-    // return FirebaseFirestore.instance
-    //     .collection('guestbook')
-    //     .doc(id)
-    //     .update(<String, dynamic>{
-    //   'text': message,
-    //   'timestamp': DateTime.now().millisecondsSinceEpoch,
-    // });
-
-    // CollectionReference guestbook = FirebaseFirestore.instance.collection('guestbook');
-    // return guestbook
-    //     .doc(update)
-    //     .update({
-    //   'text': message,
-    // });
-
-    // return FirebaseFirestore.instance.collection('guestbook').doc(message.id)
-    //     .update({
-    //   'text': message,
-    // });
-    //
-    //   FirebaseFirestore.instance
-    //     .collection('guestbook')
-    //     .update({
-    //   'text': message,
-    //   // 'timestamp': DateTime.now().millisecondsSinceEpoch,
-    //   // 'name': FirebaseAuth.instance.currentUser!.displayName ==null? 'anoy' : FirebaseAuth.instance.currentUser!.displayName,
-    //   // 'userId': FirebaseAuth.instance.currentUser!.uid,
-    // });
   }
 }
 
@@ -731,7 +580,7 @@ class _GuestBookState extends State<GuestBook> {
                     Paragraph('${message.name}: ${message.message}'), // ${message.id},
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: Text('')//DateFormat('yy/MM/dd - HH:mm:ss.SS').format(message.timestamp)),
+                      child: Text('')
                     ),
                   ],
                 ),
@@ -783,86 +632,6 @@ class _GuestBookState extends State<GuestBook> {
       ],
     );
   }
-
-  // void flutterDialog(BuildContext context) {
-  //   showDialog(
-  //       context: context,
-  //       //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
-  //       // barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //
-  //
-  //         return SizedBox(
-  //           width: 50,
-  //           child: AlertDialog(
-  //
-  //             // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(15.0)),
-  //             //Dialog Main Title
-  //             // title: Column(
-  //             //   children: <Widget>[
-  //             //     new Text("Dialog Title"),
-  //             //   ],
-  //             // ),
-  //             //
-  //             content: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: <Widget>[
-  //                 Center(
-  //                   child: TextButton(
-  //                     onPressed: () {
-  //                       // imgFromCamera();
-  //
-  //                       Navigator.pushNamed(context, '/temp-add');
-  //                       // Navigator.pop(context);
-  //                     },
-  //                     style: TextButton.styleFrom(
-  //                       foregroundColor:  Colors.black54,
-  //                       textStyle: const TextStyle(fontSize: 20,),
-  //                     ),
-  //                     child: const Text("카메라"),
-  //                   ),
-  //                 ),
-  //
-  //                 const Divider(
-  //                   height: 8,
-  //                   thickness: 2,
-  //                   indent: 8,
-  //                   endIndent: 8,
-  //                   color: Color(0xFFffcdd2),
-  //                 ),
-  //                 Center(
-  //                   child: TextButton(
-  //                     onPressed: () {
-  //                       Navigator.pop(context);
-  //                     },
-  //                     style: TextButton.styleFrom(
-  //                       foregroundColor:  Colors.black54,
-  //                       textStyle: const TextStyle(fontSize: 20,),
-  //                     ),
-  //                     child: const Text("갤러리"),
-  //                   ),
-  //                 ),
-  //                 // Text(
-  //                 //   "Dialog Content",
-  //                 // ),
-  //               ],
-  //             ),
-  //             // actions: <Widget>[
-  //             //   TextButton(
-  //             //     child: new Text("확인"),
-  //             //     onPressed: () {
-  //             //       Navigator.pop(context);
-  //             //     },
-  //             //   ),
-  //             // ],
-  //           ),
-  //         );
-  //       });
-  // }
-
 }
 
 class Argument {

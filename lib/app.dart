@@ -16,6 +16,7 @@ import 'album.dart';
 import 'album_inside.dart';
 import 'gallery_sample.dart';
 import 'myPage.dart';
+import 'log.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -95,7 +96,10 @@ class App extends StatelessWidget {
         '/my-page': ((context) {
           // return ProfilePage(providers: [], actions: [],);
           return const MyPage();
-        })
+        }),
+        '/log': ((context) {
+          return const LogPage();
+        }),
       },
       // title: 'Firebase Meetup',
 
