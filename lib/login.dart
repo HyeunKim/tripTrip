@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_gif/flutter_gif.dart';
 
 import 'firebase_options.dart';
 
@@ -23,6 +24,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -54,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage('assets/img.png'), // 배경 이미지
+                image: AssetImage('assets/login.gif'), // 배경 이미지
+                // image: AssetImage('assets/img.png'), // 배경 이미지
               ),
             ),
             child:Scaffold(
@@ -99,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           ElevatedButton(
                             child: const Text(
-                              "Google",
+                              "구글로 로그인",
                               style: TextStyle(fontSize: 20)
                             ),
                             onPressed: signInWithGoogle,
@@ -108,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 10),
                           ElevatedButton(
                             child: const Text(
-                                "Guest",
+                                "게스트로 로그인",
                                 style: TextStyle(fontSize: 20)
                             ),
                             onPressed: (){FirebaseAuth.instance.signInAnonymously();},
